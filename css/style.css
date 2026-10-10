@@ -332,7 +332,7 @@ h1, h2, h3, h4, h5 { font-family: var(--font-head); color: var(--heading); line-
 #shopContent.fade { animation: gridFade .5s; }
 
 .empty { text-align: center; padding: 60px 20px; border: 1px dashed #ddd; border-radius: var(--radius); }
-.empty i { font-size: 46px; color: var(--primary); margin-bottom: 14px; }
+.empty > i { font-size: 46px; color: var(--primary); margin-bottom: 14px; }
 .empty p { margin-bottom: 20px; }
 
 @media (max-width: 1024px) {
@@ -2015,7 +2015,7 @@ textarea.form-control {
   text-align: center;
   padding: 70px 20px;
 }
-.wishlist-empty i {
+.wishlist-empty > i {
   font-size: 56px;
   color: #d8d8d8;
   margin-bottom: 18px;
@@ -3390,3 +3390,95 @@ textarea.form-control {
 
 
 
+
+
+/* =========================================================
+   PHONE POLISH
+   Comfortable tap targets, readable text, nothing wider than the screen.
+   ========================================================= */
+
+/* Grids with a 1fr column grow to fit their widest child; minmax(0, 1fr) stops that */
+@media (max-width: 900px) {
+  .checkout__layout, .cart__layout { grid-template-columns: minmax(0, 1fr); }
+  .checkout-main, .checkout-summary { min-width: 0; }
+}
+
+/* Touch screens have no hover, so card buttons must always be visible */
+@media (hover: none) {
+  .product__actions button { opacity: 1; transform: none; width: 38px; height: 38px; font-size: 14px; }
+}
+
+@media (max-width: 860px) {
+  /* header: 40px tap areas that still fit next to the logo */
+  .header__inner { gap: 8px; }
+  .header__icons { gap: 2px; }
+  .header__icons > a, .header__icons > button { width: 40px; height: 40px; display: inline-grid; place-items: center; border-radius: 50%; }
+  .header__icons .badge { top: 2px; right: 0; }
+  .logo { font-size: clamp(16px, 5.4vw, 22px); gap: 6px; flex-shrink: 1; min-width: 0; white-space: nowrap; }
+
+  /* slider dots: small to look at, 24px+ to tap */
+  .hero__dots button, .cat-slider__dots button { position: relative; }
+  .hero__dots button::after, .cat-slider__dots button::after { content: ''; position: absolute; inset: -9px -5px; }
+
+  /* text that was too small to read */
+  .product__tag, .news__tag, .checkout-item__meta, .checkout-item__meta span, .checkout-totals__row { font-size: 12px; }
+  .brand small { font-size: 11.5px; letter-spacing: .3px; }
+  .collection__body span { font-size: 12px; }
+  .info-card__content span { font-size: 12px; }
+  .info-card__content a { display: inline-block; padding: 8px 0; }
+
+  /* product cards */
+  .product .btn { padding: 12px 20px; font-size: 13px; min-height: 42px; justify-content: center; }
+  .product h4 a { display: inline-block; padding: 3px 0; }
+
+  .socials a { width: 42px; height: 42px; }
+
+  /* cart drawer controls */
+  .cart-drawer__close { width: 44px; height: 44px; }
+  .cart-drawer__stepper { height: 38px; }
+  .cart-drawer__stepper button { width: 38px; font-size: 14px; }
+  .cart-drawer__stepper span { font-size: 14px; }
+  .cart-drawer__remove { min-width: 40px; min-height: 40px; display: grid; place-items: center; font-size: 16px; }
+
+  /* category tabs: one swipeable row instead of many wrapped rows */
+  .cats { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; gap: 18px; padding: 4px 16px 12px; margin: 0 -16px 28px; scroll-snap-type: x proximity; scrollbar-width: none; }
+  .cats::-webkit-scrollbar { display: none; }
+  .cat { flex: 0 0 auto; scroll-snap-align: start; }
+
+  /* footer links: 40px rows */
+  .footer ul li { margin-bottom: 0; }
+  .footer ul a { display: block; padding: 10px 0; }
+  .shop__back { min-height: 40px; margin-bottom: 4px; }
+  .post-cat-badge, .news__tag { min-height: 32px; display: inline-flex; align-items: center; }
+  .cart-item-name { display: inline-block; padding: 4px 0; }
+  .cart-item-remove { min-width: 40px; min-height: 42px; }
+  .pd-stepper button { min-width: 40px; }
+  .pd-stepper input { min-height: 40px; }
+}
+
+/* Product cards: same height in a row, Add To Cart always on the same line even when a name or price wraps */
+.product { display: flex; flex-direction: column; align-items: center; }
+.product__img { width: 100%; }
+.product h4 { width: 100%; }
+.product__price { display: flex; flex-wrap: wrap; justify-content: center; column-gap: 8px; margin-top: auto; }
+.product .btn { margin-top: 0; }
+.product__price del { margin-right: 0; }
+
+/* Cart on phones: price on its own line, stepper left and line total right, nothing wraps mid-price */
+@media (max-width: 900px) {
+  .cart-mobile-card { padding: 14px; gap: 12px; }
+  .cart-mobile-card__row { flex-wrap: wrap; gap: 8px 12px; }
+  .cart-mobile-card .cart-item-price { flex-basis: 100%; margin: 0; white-space: nowrap; font-size: 14px; }
+  .cart-mobile-card .pd-stepper { order: 1; }
+  .cart-mobile-card .cart-item-total { order: 2; margin-left: auto; white-space: nowrap; font-size: 16px; }
+  .cart-summary { padding: 20px; position: static; }
+  .cart-summary__line { gap: 12px; }
+  .cart-summary__line--total { font-size: 15px; }
+  .cart-summary__line--total strong { font-size: 21px; white-space: nowrap; }
+  .checkout-summary { padding: 20px; }
+  .checkout-totals__row strong { white-space: nowrap; }
+}
+
+/* Coupon boxes: the input shrinks so the Apply button never leaves the card on very small phones */
+.cart-coupon__row input, #checkoutCouponInput { min-width: 0; flex: 1; }
+.cart-coupon__row .btn, #checkoutCouponInput + .btn, #checkoutCouponInput + button { flex-shrink: 0; }

@@ -274,19 +274,21 @@ async function initDynamicCategoryTabs() {
       const res = await api.getCollection((c.path || c.slug).split('/'));
       let prods = (res && res.node && res.node.products) ? res.node.products : [];
 
+      // A parent collection holds no products itself: show products from everything inside it
       if (prods.length === 0 && c.children && c.children.length > 0) {
-        const childIds = c.children.map(k => k.id);
-        if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+        const ids = [];
+        (function collect(n) { (n.children || []).forEach(k => { ids.push(k.id); collect(k); }); })(c);
+        if (typeof supabaseClient !== 'undefined' && supabaseClient && ids.length) {
           const { data: cProds } = await supabaseClient
             .from('products')
             .select('*, product_images(*), product_variants(*)')
-            .in('collection_id', childIds)
+            .in('collection_id', ids)
             .eq('is_active', true)
             .order('sort_order', { ascending: true })
             .limit(8);
-          if (cProds && cProds.length > 0) {
-            prods = cProds.map(normalizeProduct);
-          }
+          if (cProds && cProds.length > 0) prods = cProds.map(normalizeProduct);
+        } else {
+          (function gather(n) { (n.products || []).forEach(x => prods.push(x)); (n.children || []).forEach(gather); })(res && res.node ? res.node : c);
         }
       }
 
@@ -356,7 +358,7 @@ document.querySelectorAll('.cat-slider, .cats, .section-head, .arrivals__left, .
 const homeNewsGrid = document.getElementById('homeNewsGrid');
 if (homeNewsGrid && typeof api !== 'undefined' && api.getPosts) {
   api.getPosts({ page: 1, limit: 3 }).then(({ posts }) => {
-    if (!posts || posts.length === 0) return;
+    if (!posts || posts.length === 0) { const sec = homeNewsGrid.closest('section'); if (sec) sec.style.display = 'none'; return; }
     homeNewsGrid.innerHTML = posts.map(p => `
       <article class="news__card reveal in">
         <div class="news__img">

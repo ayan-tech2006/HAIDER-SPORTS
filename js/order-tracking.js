@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (items.length) {
       trackItemsList.innerHTML = items.map(item => `
         <div class="track-item-row">
-          <img src="${img(item.img || '1531415074868-8369cdd257c6', 100)}" alt="${esc(item.name)}" class="track-item-thumb">
+          <img src="${img(item.img || '1593341646647-75b32930e4a1', 100)}" alt="${esc(item.name)}" class="track-item-thumb">
           <div class="track-item-details">
             <strong>${esc(item.name)}</strong>
             <span>${item.variant ? `Variant: ${esc(item.variant)} · ` : ''}Qty: ${item.qty || 1}</span>

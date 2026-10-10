@@ -96,7 +96,7 @@
 .pdp-ship { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 24px; }
 .pdp-ship__item { display: flex; align-items: center; gap: 12px; }
 .pdp-ship__ico { width: 40px; height: 40px; border-radius: 50%; background: var(--light); display: grid; place-items: center; color: var(--heading); font-size: 14px; flex-shrink: 0; }
-.pdp-ship__item small { display: block; font-size: 11px; color: #999; }
+.pdp-ship__item small { display: block; font-size: 12px; color: #999; }
 .pdp-ship__item b { font-size: 13px; color: var(--heading); font-weight: 600; }
 
 /* ---------- Stars ---------- */
@@ -158,7 +158,7 @@
 .pdp-rel:hover h3 { color: var(--primary); }
 .pdp-rel__price { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-weight: 600; color: var(--heading); font-size: 15px; }
 .pdp-rel__price del { color: #aaa; font-weight: 400; font-size: 13px; }
-.pdp-rel__price span { background: #fdeceb; color: #d92d20; font-size: 11px; padding: 2px 9px; border-radius: 20px; }
+.pdp-rel__price span { background: #fdeceb; color: #d92d20; font-size: 12px; padding: 2px 9px; border-radius: 20px; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 960px) {

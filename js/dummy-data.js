@@ -630,7 +630,7 @@ const DUMMY_API = {
           paymentMethod: 'Cash on Delivery (COD)',
         },
         items: [
-          { name: 'English Willow Cricket Bat - Edition Pro', variant: '1150g', qty: 1, price: 18500, img: '1531415074868-8369cdd257c6' },
+          { name: 'English Willow Cricket Bat - Edition Pro', variant: '1150g', qty: 1, price: 18500, img: '1593341646647-75b32930e4a1' },
           { name: 'Red Leather Cricket Ball (Pack of 2)', variant: '2-Pack', qty: 1, price: 1800, img: '1540747913346-39e1bf896636' },
         ],
         subtotal: 20300,
@@ -747,7 +747,7 @@ const DUMMY_API = {
           paymentMethod: 'Cash on Delivery (COD)',
         },
         items: [
-          { name: 'Cricket Gear Item', variant: 'Standard', qty: 1, price: 4500, img: '1531415074868-8369cdd257c6' }
+          { name: 'Cricket Gear Item', variant: 'Standard', qty: 1, price: 4500, img: '1593341646647-75b32930e4a1' }
         ],
         subtotal: 4500,
         deliveryCharge: 250,
