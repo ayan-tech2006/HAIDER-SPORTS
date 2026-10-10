@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Customer Reviews Moderation - Haider Sports Admin</title>
+
+  <!-- Google Fonts & Lucide Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Admin Styles -->
+  <link rel="stylesheet" href="css/admin.css">
+
+  <style>
+    /* Status Navigation Tabs */
+    .review-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    .review-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #64748b;
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .review-tab-btn:hover {
+      color: var(--heading);
+      background: #f1f5f9;
+    }
+    .review-tab-btn.active {
+      color: var(--primary);
+      background: rgba(241, 90, 36, 0.08);
+      border-color: rgba(241, 90, 36, 0.2);
+    }
+    .review-tab-count {
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 99px;
+      background: #e2e8f0;
+      color: #475569;
+    }
+    .review-tab-btn.active .review-tab-count {
+      background: var(--primary);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Admin Shell Layout -->
+  <div id="adminLayout">
+
+    <!-- Top Action Bar -->
+    <div class="admin-header-row">
+      <div>
+        <h2 style="font-size: 22px; font-weight: 800; color: var(--heading);">Customer Reviews Moderation</h2>
+        <p style="font-size: 13px; color: #64748b; margin-top: 2px;">Approve or reject customer feedback submitted across your product catalog.</p>
+      </div>
+
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button type="button" class="btn btn--outline btn--sm" id="bulkApproveBtn" disabled style="display: inline-flex; align-items: center; gap: 6px;">
+          <i data-lucide="check-check" style="width: 14px; height: 14px;"></i> Bulk Approve
+        </button>
+        <button type="button" class="btn btn--outline btn--sm" id="bulkDeleteBtn" style="color: #ef4444; border-color: #fca5a5; display: inline-flex; align-items: center; gap: 6px;" disabled>
+          <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Bulk Delete
+        </button>
+        <button type="button" class="btn btn--dark btn--sm" id="refreshReviewsBtn" style="display: inline-flex; align-items: center; gap: 6px;">
+          <i data-lucide="rotate-cw" style="width: 14px; height: 14px;"></i> Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Review Status Tabs -->
+    <div class="review-tabs" id="reviewTabsNav">
+      <button class="review-tab-btn active" data-tab="pending">
+        Pending Approval <span class="review-tab-count" id="countPendingReviews">0</span>
+      </button>
+      <button class="review-tab-btn" data-tab="approved">
+        Approved Reviews <span class="review-tab-count" id="countApprovedReviews">0</span>
+      </button>
+      <button class="review-tab-btn" data-tab="all">
+        All Reviews <span class="review-tab-count" id="countAllReviews">0</span>
+      </button>
+    </div>
+
+    <!-- Filter & Search Card -->
+    <div class="admin-card" style="margin-bottom: 20px;">
+      <div class="admin-card__body" style="padding: 16px;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 14px;">
+          <!-- Search box -->
+          <div>
+            <label class="form-label" style="font-size: 12px;">Search Reviews</label>
+            <div style="position: relative;">
+              <i data-lucide="search" style="position: absolute; left: 12px; top: 11px; color: #94a3b8; width: 15px; height: 15px;"></i>
+              <input type="text" id="reviewSearchInput" class="form-control form-control--sm" placeholder="Search by customer name, keyword, or review text..." style="padding-left: 36px;">
+            </div>
+          </div>
+
+          <!-- Product Filter -->
+          <div>
+            <label class="form-label" style="font-size: 12px;">Filter by Product</label>
+            <select id="reviewProductFilter" class="form-control form-control--sm">
+              <option value="all">All Products</option>
+            </select>
+          </div>
+
+          <!-- Rating Filter -->
+          <div>
+            <label class="form-label" style="font-size: 12px;">Star Rating</label>
+            <select id="reviewRatingFilter" class="form-control form-control--sm">
+              <option value="all">All Ratings</option>
+              <option value="5">★★★★★ (5 Stars)</option>
+              <option value="4">★★★★☆ (4 Stars)</option>
+              <option value="3">★★★☆☆ (3 Stars)</option>
+              <option value="2">★★☆☆☆ (2 Stars)</option>
+              <option value="1">★☆☆☆☆ (1 Star)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reviews Data Card -->
+    <div class="admin-card">
+      <div class="admin-card__body" style="padding: 0;">
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="reviewsTable">
+            <thead>
+              <tr>
+                <th style="width: 40px; text-align: center;">
+                  <input type="checkbox" id="selectAllReviews">
+                </th>
+                <th style="width: 200px;">Product</th>
+                <th style="width: 140px;">Customer</th>
+                <th style="width: 110px;">Rating</th>
+                <th>Feedback / Comment</th>
+                <th style="width: 120px;">Submitted</th>
+                <th style="width: 90px;">Status</th>
+                <th style="text-align: right; width: 140px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="reviewsTableBody">
+              <!-- Rendered via reviews.js -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Bar -->
+        <div class="table-pagination">
+          <div class="pagination-info" id="reviewPaginationInfo">Showing 0 reviews</div>
+          <div class="pagination-btns" id="reviewPaginationBtns"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="js/admin-common.js"></script>
+  <script src="js/reviews.js"></script>
+
+</body>
+</html>

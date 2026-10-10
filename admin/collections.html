@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Collections Manager - Haider Sports Admin</title>
+
+  <!-- Google Fonts & Lucide Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Admin Styles -->
+  <link rel="stylesheet" href="css/admin.css">
+
+  <style>
+    /* Collections Tree Styles */
+    .tree-container {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      padding: 16px;
+    }
+
+    .tree-node {
+      margin: 4px 0;
+      position: relative;
+    }
+
+    .tree-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid var(--border-light);
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .tree-row:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .tree-toggle-btn {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6b7280;
+      cursor: pointer;
+      font-size: 11px;
+      border-radius: 6px;
+      background: none;
+      border: none;
+      transition: transform 0.2s, background 0.15s;
+    }
+    .tree-toggle-btn:hover {
+      background: #e2e8f0;
+      color: var(--heading);
+    }
+    .tree-toggle-btn.collapsed svg,
+    .tree-toggle-btn.collapsed i {
+      transform: rotate(-90deg);
+    }
+    .tree-toggle-btn.empty {
+      visibility: hidden;
+    }
+
+    .tree-thumb {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .tree-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tree-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--heading);
+    }
+
+    .tree-slug {
+      font-size: 11px;
+      color: #94a3b8;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-family: monospace;
+    }
+
+    .tree-count-badge {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #475569;
+      background: #f1f5f9;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .tree-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tree-children {
+      margin-left: 28px;
+      padding-left: 14px;
+      border-left: 2px dashed #e2e8f0;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .tree-children.collapsed {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Admin Shell Layout -->
+  <div id="adminLayout">
+    <!-- Header Row -->
+    <div class="admin-header-row">
+      <div>
+        <h2 style="font-size: 22px; font-weight: 800; color: var(--heading);">Collections &amp; Categories</h2>
+        <p style="font-size: 13px; color: #6b7280; margin-top: 2px;">Manage nested categories, ordering, images, and hierarchy tree.</p>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <button type="button" class="btn btn--outline btn--sm" id="toggleAllTreeBtn" style="display: inline-flex; align-items: center; gap: 6px;">
+          <i data-lucide="chevrons-up-down" style="width: 14px; height: 14px;"></i> <span id="toggleTreeText">Collapse All</span>
+        </button>
+        <button type="button" class="btn btn--primary btn--sm" id="newRootCategoryBtn" style="display: inline-flex; align-items: center; gap: 6px;">
+          <i data-lucide="plus" style="width: 15px; height: 15px;"></i> Add New Category
+        </button>
+      </div>
+    </div>
+
+    <!-- Tree Search & Controls Bar -->
+    <div class="admin-card" style="margin-bottom: 18px;">
+      <div class="admin-card__body" style="padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div class="admin-search-wrap" style="max-width: 400px; flex: 1;">
+          <i data-lucide="search" style="width: 16px; height: 16px;"></i>
+          <input type="text" id="categorySearchInput" class="form-control" placeholder="Search categories by name or slug...">
+        </div>
+
+        <div style="font-size: 12.5px; color: #6b7280; display: flex; align-items: center; gap: 16px;">
+          <span style="display: inline-flex; align-items: center; gap: 6px;"><i data-lucide="info" style="width: 14px; height: 14px; color: var(--primary);"></i> <strong>Rule:</strong> Products can only be placed in leaf categories.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tree View Container -->
+    <div class="tree-container" id="treeContainer">
+      <div style="padding: 48px; text-align: center; color: #9ca3af;">
+        <i data-lucide="loader-2" class="spin-slow" style="width: 28px; height: 28px; margin: 0 auto 12px; display: block;"></i>
+        Loading category hierarchy...
+      </div>
+    </div>
+  </div>
+
+  <!-- Add / Edit Collection Modal -->
+  <div class="admin-modal-backdrop" id="collectionModal">
+    <div class="admin-modal admin-modal--lg">
+      <div class="admin-modal__header">
+        <h3 class="admin-modal__title" id="collectionModalTitle">Add New Category</h3>
+        <button type="button" class="admin-modal__close" onclick="admin.modal('collectionModal').close()">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+      <form id="collectionForm">
+        <div class="admin-modal__body">
+          <input type="hidden" id="colId" value="">
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <!-- Category Name -->
+            <div class="form-group">
+              <label for="colName" class="form-label">Category Name <span class="req">*</span></label>
+              <input type="text" id="colName" class="form-control" placeholder="e.g. English Willow" required>
+            </div>
+
+            <!-- Slug -->
+            <div class="form-group">
+              <label for="colSlug" class="form-label">URL Slug <span class="req">*</span></label>
+              <input type="text" id="colSlug" class="form-control" placeholder="e.g. english-willow" required>
+              <div class="form-hint">Generated automatically; used in store URLs.</div>
+            </div>
+          </div>
+
+          <!-- Parent Category -->
+          <div class="form-group">
+            <label for="colParent" class="form-label">Parent Category</label>
+            <select id="colParent" class="form-control">
+              <option value="">-- None (Top-Level Root Category) --</option>
+            </select>
+            <div class="form-hint" id="parentHint">
+              Select where this category belongs in the hierarchy.
+            </div>
+          </div>
+
+          <!-- Image URL / Upload -->
+          <div class="form-group">
+            <label class="form-label">Category Image</label>
+            <div style="display: flex; gap: 12px; align-items: flex-start;">
+              <img src="https://images.unsplash.com/photo-1593766788306-28561086694e?w=80&q=80" id="colImgPreview" style="width: 64px; height: 64px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border);" alt="Preview">
+              <div style="flex: 1;">
+                <input type="text" id="colImgUrl" class="form-control" placeholder="Image URL or Unsplash ID" style="margin-bottom: 8px;">
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <label class="btn btn--outline btn--xs" style="cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                    <i data-lucide="upload" style="width: 13px; height: 13px;"></i> Upload Image
+                    <input type="file" id="colImgFile" accept="image/*" style="display: none;">
+                  </label>
+                  <span id="colUploadStatus" style="font-size: 12px; color: #6b7280;">Max 5MB (JPG, PNG, WEBP)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <!-- Sort Order -->
+            <div class="form-group">
+              <label for="colSortOrder" class="form-label">Sort Order</label>
+              <input type="number" id="colSortOrder" class="form-control" value="0" min="0">
+              <div class="form-hint">Lower numbers appear first among siblings.</div>
+            </div>
+
+            <!-- Active Status -->
+            <div class="form-group" style="padding-top: 28px;">
+              <label class="form-check">
+                <input type="checkbox" id="colIsActive" checked>
+                <span style="font-weight: 600; color: var(--heading);">Visible in Store</span>
+              </label>
+              <div class="form-hint" style="margin-left: 24px;">Uncheck to hide category and subcategories from customer storefront.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-modal__footer">
+          <button type="button" class="btn btn--outline btn--sm" onclick="admin.modal('collectionModal').close()">Cancel</button>
+          <button type="submit" class="btn btn--primary btn--sm" id="saveCollectionBtn" style="display: inline-flex; align-items: center; gap: 6px;">
+            <i data-lucide="check" style="width: 15px; height: 15px;"></i> Save Category
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Smart Delete Category Modal -->
+  <div class="admin-modal-backdrop" id="deleteCollectionModal">
+    <div class="admin-modal" style="max-width: 520px;">
+      <div class="admin-modal__header">
+        <h3 class="admin-modal__title" id="delModalTitle">Delete Category</h3>
+        <button type="button" class="admin-modal__close" onclick="admin.modal('deleteCollectionModal').close()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="admin-modal__body" id="delModalBody">
+        <!-- Rendered dynamically by collections.js -->
+      </div>
+
+      <div class="admin-modal__footer" id="delModalFooter">
+        <button type="button" class="btn btn--outline btn--sm" onclick="admin.modal('deleteCollectionModal').close()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="js/admin-common.js"></script>
+  <script src="js/collections.js"></script>
+
+</body>
+</html>

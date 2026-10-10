@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Customer Messages &amp; Subscribers - Haider Sports Admin</title>
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Admin Styles -->
+  <link rel="stylesheet" href="css/admin.css">
+
+  <style>
+    /* Message Tabs */
+    .msg-nav-tabs {
+      display: flex;
+      gap: 10px;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 24px;
+    }
+    .msg-nav-btn {
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #64748b;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+    .msg-nav-btn:hover {
+      color: var(--heading);
+    }
+    .msg-nav-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .msg-unread-badge {
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 99px;
+      background: #ef4444;
+      color: #fff;
+    }
+
+    /* Unread row styling */
+    tr.is-unread td {
+      font-weight: 700;
+      background: rgba(241, 90, 36, 0.03);
+    }
+
+    /* Side Drawer */
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s ease;
+    }
+    .drawer-backdrop.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .drawer-panel {
+      position: fixed;
+      top: 0;
+      right: -480px;
+      width: 480px;
+      max-width: 90vw;
+      height: 100vh;
+      background: #fff;
+      z-index: 1000;
+      box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .drawer-panel.active {
+      right: 0;
+    }
+    .drawer-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .drawer-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Admin Shell Layout -->
+  <div id="adminLayout">
+
+    <!-- Top Action Bar -->
+    <div class="admin-header-row">
+      <div>
+        <h2 style="font-size: 22px; font-weight: 800; color: var(--heading);">Communications</h2>
+        <p style="font-size: 13px; color: #64748b; margin-top: 2px;">Contact inquiries from customers and newsletter marketing subscribers.</p>
+      </div>
+
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button type="button" class="btn btn--dark btn--sm" id="refreshCommsBtn">
+          <i data-lucide="rotate-cw" style="width: 14px; height: 14px;"></i> Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Section Navigation Tabs -->
+    <div class="msg-nav-tabs">
+      <button type="button" class="msg-nav-btn active" data-tab="messagesTab">
+        <i data-lucide="inbox" style="width: 16px; height: 16px;"></i> Contact Inquiries
+        <span class="msg-unread-badge" id="unreadPillBadge" style="display: none;">0</span>
+      </button>
+      <button type="button" class="msg-nav-btn" data-tab="subscribersTab">
+        <i data-lucide="mail" style="width: 16px; height: 16px;"></i> Newsletter Subscribers
+        <span class="badge badge--neutral" id="subsTotalBadge" style="font-size: 11px;">0</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: CONTACT MESSAGES -->
+    <div id="messagesTab" class="tab-pane">
+      <!-- Search & Status Filter -->
+      <div class="admin-card" style="margin-bottom: 20px;">
+        <div class="admin-card__body" style="padding: 16px;">
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 14px;">
+            <div>
+              <div style="position: relative;">
+                <i data-lucide="search" style="position: absolute; left: 12px; top: 12px; color: #94a3b8; width: 15px; height: 15px;"></i>
+                <input type="text" id="msgSearchInput" class="form-control form-control--sm" placeholder="Search by name, phone, email, subject, or inquiry text..." style="padding-left: 36px;">
+              </div>
+            </div>
+
+            <div>
+              <select id="msgStatusFilter" class="form-control form-control--sm">
+                <option value="all">All Inquiries</option>
+                <option value="unread">Unread Inquiries</option>
+                <option value="read">Read Inquiries</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages Table -->
+      <div class="admin-card">
+        <div class="admin-card__body" style="padding: 0;">
+          <div class="admin-table-wrap">
+            <table class="admin-table" id="messagesTable">
+              <thead>
+                <tr>
+                  <th style="width: 40px; text-align: center;">Status</th>
+                  <th style="width: 180px;">Customer</th>
+                  <th>Subject &amp; Message Snippet</th>
+                  <th style="width: 130px;">Received</th>
+                  <th style="text-align: right; width: 140px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="messagesTableBody">
+                <!-- Injected via messages.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: SUBSCRIBERS -->
+    <div id="subscribersTab" class="tab-pane" style="display: none;">
+      <!-- Search & Export Card -->
+      <div class="admin-card" style="margin-bottom: 20px;">
+        <div class="admin-card__body" style="padding: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap;">
+            <div style="flex: 1; max-width: 400px; position: relative;">
+              <i data-lucide="search" style="position: absolute; left: 12px; top: 12px; color: #94a3b8; width: 15px; height: 15px;"></i>
+              <input type="text" id="subsSearchInput" class="form-control form-control--sm" placeholder="Search subscribers..." style="padding-left: 36px;">
+            </div>
+
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn btn--outline btn--sm" id="copyAllEmailsBtn">
+                <i data-lucide="copy" style="width: 14px; height: 14px;"></i> Copy All Emails
+              </button>
+              <button type="button" class="btn btn--outline btn--sm" id="exportSubsCsvBtn">
+                <i data-lucide="download" style="width: 14px; height: 14px;"></i> Export CSV
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subscribers Table -->
+      <div class="admin-card">
+        <div class="admin-card__body" style="padding: 0;">
+          <div class="admin-table-wrap">
+            <table class="admin-table" id="subscribersTable">
+              <thead>
+                <tr>
+                  <th>Email Address</th>
+                  <th>Subscribed Date</th>
+                  <th style="text-align: right; width: 100px;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="subscribersTableBody">
+                <!-- Injected via messages.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Message Side Drawer Backdrop -->
+  <div class="drawer-backdrop" id="msgDrawerBackdrop"></div>
+
+  <!-- Message Detail Side Drawer -->
+  <div class="drawer-panel" id="msgDrawerPanel">
+    <div class="drawer-header">
+      <div>
+        <h3 style="font-size: 18px; font-weight: 800; color: var(--heading);" id="drawerSenderName">Inquiry Details</h3>
+        <div style="font-size: 12px; color: #64748b;" id="drawerTimestamp">Just now</div>
+      </div>
+      <button type="button" class="btn btn--outline btn--xs" id="closeMsgDrawerBtn">
+        <i data-lucide="x" style="width: 15px; height: 15px;"></i>
+      </button>
+    </div>
+
+    <div class="drawer-body">
+      <!-- Contact & Reply Actions -->
+      <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
+        <a href="#" id="drawerCallBtn" class="btn btn--outline btn--sm" style="flex: 1; justify-content: center;">
+          <i data-lucide="phone" style="width: 14px; height: 14px;"></i> Call
+        </a>
+        <a href="#" id="drawerWhatsAppBtn" target="_blank" class="btn btn--sm" style="flex: 1; justify-content: center; background: #25d366; color: #fff; border: none;">
+          <i data-lucide="message-circle" style="width: 14px; height: 14px;"></i> WhatsApp
+        </a>
+        <a href="#" id="drawerEmailBtn" class="btn btn--outline btn--sm" style="flex: 1; justify-content: center;">
+          <i data-lucide="mail" style="width: 14px; height: 14px;"></i> Email
+        </a>
+      </div>
+
+      <!-- Sender Info Box -->
+      <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 20px; font-size: 13px; line-height: 1.6;">
+        <div><strong>Phone:</strong> <span id="drawerSenderPhone">-</span></div>
+        <div><strong>Email:</strong> <span id="drawerSenderEmail">-</span></div>
+      </div>
+
+      <!-- Subject & Full Message -->
+      <div style="margin-bottom: 24px;">
+        <div style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Subject</div>
+        <div style="font-size: 16px; font-weight: 800; color: var(--heading); margin-top: 2px;" id="drawerSubject">-</div>
+
+        <div style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-top: 16px;">Message</div>
+        <div style="font-size: 14px; color: #334155; line-height: 1.7; background: #fff; padding: 14px; border-radius: 8px; border: 1px solid var(--border); margin-top: 4px; white-space: pre-wrap;" id="drawerFullMessage">
+          -
+        </div>
+      </div>
+
+      <!-- Drawer Bottom Actions -->
+      <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid var(--border);">
+        <button type="button" class="btn btn--outline btn--sm" id="drawerToggleReadBtn">
+          Mark as Unread
+        </button>
+        <button type="button" class="btn btn--outline btn--sm" style="color: #ef4444; border-color: #fca5a5;" id="drawerDeleteBtn">
+          <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="js/admin-common.js"></script>
+  <script src="js/messages.js"></script>
+
+</body>
+</html>

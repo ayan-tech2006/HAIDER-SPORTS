@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Dashboard - Haider Sports Admin</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Admin Styles -->
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- Admin Layout Shell (Injected by admin.initLayout) -->
+  <div id="adminLayout">
+    <!-- Header Controls Row -->
+    <div class="admin-header-row">
+      <div>
+        <h2 style="font-size: 28px; font-weight: 800; color: #18181b;">Store Overview</h2>
+        <p style="font-size: 14px; color: #71717a; margin-top: 4px;">Stay on top of your orders, track revenue, and keep stock under control.</p>
+      </div>
+
+      <!-- Date Range Filter Pills -->
+      <div class="filter-pills" id="dateFilterGroup">
+        <button type="button" class="filter-pill" data-range="today">Today</button>
+        <button type="button" class="filter-pill" data-range="7d">Last 7 Days</button>
+        <button type="button" class="filter-pill active" data-range="30d">Last 30 Days</button>
+        <button type="button" class="filter-pill" data-range="month">This Month</button>
+      </div>
+    </div>
+
+    <!-- 6 Stat Cards Grid -->
+    <div class="admin-stats-grid">
+      <!-- 1. Total Sales (Vibrant Orange Card) -->
+      <div class="stat-card">
+        <div class="stat-card__top">
+          <span class="stat-card__label">Sales Revenue</span>
+          <div class="stat-card__icon">
+            <i data-lucide="dollar-sign"></i>
+          </div>
+        </div>
+        <div class="stat-card__value" id="valRevenue">Rs. 0</div>
+        <div class="stat-card__sub" id="subRevenue">Selected period revenue</div>
+      </div>
+
+      <!-- 2. Total Orders -->
+      <div class="stat-card">
+        <div class="stat-card__top">
+          <span class="stat-card__label">Total Orders</span>
+          <div class="stat-card__icon">
+            <i data-lucide="shopping-bag"></i>
+          </div>
+        </div>
+        <div class="stat-card__value" id="valOrders">0</div>
+        <div class="stat-card__sub" id="subOrders">Customer orders placed</div>
+      </div>
+
+      <!-- 3. Pending Orders -->
+      <div class="stat-card">
+        <div class="stat-card__top">
+          <span class="stat-card__label">Pending Orders</span>
+          <div class="stat-card__icon">
+            <i data-lucide="clock"></i>
+          </div>
+        </div>
+        <div class="stat-card__value" id="valPending" style="color: #d97706;">0</div>
+        <div class="stat-card__sub">Awaiting confirmation</div>
+      </div>
+
+      <!-- 4. This Month Sales -->
+      <div class="stat-card">
+        <div class="stat-card__top">
+          <span class="stat-card__label">This Month Sales</span>
+          <div class="stat-card__icon">
+            <i data-lucide="trending-up"></i>
+          </div>
+        </div>
+        <div class="stat-card__value" id="valMonthSales">Rs. 0</div>
+        <div class="stat-card__sub">Current calendar month</div>
+      </div>
+
+      <!-- 5. Total Products -->
+      <div class="stat-card">
+        <div class="stat-card__top">
+          <span class="stat-card__label">Total Products</span>
+          <div class="stat-card__icon">
+            <i data-lucide="package"></i>
+          </div>
+        </div>
+        <div class="stat-card__value" id="valProducts">0</div>
+        <div class="stat-card__sub">Active store catalog</div>
+      </div>
+
+      <!-- 6. Low Stock Alert -->
+      <div class="stat-card">
+        <div class="stat-card__top">
+          <span class="stat-card__label">Low Stock (≤ 5)</span>
+          <div class="stat-card__icon">
+            <i data-lucide="alert-triangle"></i>
+          </div>
+        </div>
+        <div class="stat-card__value" id="valLowStock" style="color: #dc2626;">0</div>
+        <div class="stat-card__sub">Requires restock soon</div>
+      </div>
+    </div>
+
+    <!-- Sales Analytics Chart Card -->
+    <div class="admin-card">
+      <div class="admin-card__header">
+        <div>
+          <h3 class="admin-card__title">Revenue Analytics</h3>
+          <p style="font-size: 12.5px; color: #71717a; margin-top: 2px;">Daily sales trend across selected timeframe (excludes cancelled orders)</p>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; color: var(--primary); display: inline-flex; align-items: center; gap: 6px;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary); display: inline-block;"></span> Net Revenue (PKR)
+        </div>
+      </div>
+      <div class="admin-card__body" style="position: relative; height: 320px;">
+        <canvas id="salesChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Two Column Dashboard Grid -->
+    <div class="dashboard-grid">
+      <!-- Left Column: Recent Orders (Last 10) -->
+      <div class="admin-card" style="margin-bottom: 0;">
+        <div class="admin-card__header">
+          <h3 class="admin-card__title">Recent Orders</h3>
+          <a href="orders.html" class="btn btn--outline btn--xs">
+            View All Orders <i data-lucide="arrow-right"></i>
+          </a>
+        </div>
+        <div class="admin-table-wrap" style="border: none; border-radius: 0;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Order #</th>
+                <th>Customer</th>
+                <th>City</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Time</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="recentOrdersTbody">
+              <tr>
+                <td colspan="7" style="text-align: center; padding: 32px; color: #9ca3af;">
+                  <i data-lucide="loader-2" class="lucide-spin"></i> Loading recent orders...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right Column: Low Stock & Top Products -->
+      <div style="display: flex; flex-direction: column; gap: 24px;">
+        <!-- Low Stock Alert Box -->
+        <div class="admin-card" style="margin-bottom: 0;">
+          <div class="admin-card__header">
+            <h3 class="admin-card__title" style="color: #dc2626; display: inline-flex; align-items: center; gap: 6px;">
+              <i data-lucide="alert-triangle"></i> Low Stock Items
+            </h3>
+            <a href="products.html" class="btn btn--outline btn--xs">Inventory</a>
+          </div>
+          <div class="admin-card__body" style="padding: 12px 18px;" id="lowStockContainer">
+            <p style="font-size: 13px; color: #9ca3af; text-align: center; padding: 20px;">
+              <i data-lucide="loader-2" class="lucide-spin"></i> Checking inventory...
+            </p>
+          </div>
+        </div>
+
+        <!-- Top Selling Products -->
+        <div class="admin-card" style="margin-bottom: 0;">
+          <div class="admin-card__header">
+            <h3 class="admin-card__title" style="display: inline-flex; align-items: center; gap: 6px;">
+              <i data-lucide="trophy" style="color: #f59e0b;"></i> Top Selling Products
+            </h3>
+            <span style="font-size: 11.5px; color: #71717a;">Last 30 Days</span>
+          </div>
+          <div class="admin-card__body" style="padding: 12px 18px;" id="topProductsContainer">
+            <p style="font-size: 13px; color: #9ca3af; text-align: center; padding: 20px;">
+              <i data-lucide="loader-2" class="lucide-spin"></i> Calculating bestsellers...
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Details Quick Modal -->
+  <div class="admin-modal-backdrop" id="orderQuickModal">
+    <div class="admin-modal admin-modal--lg">
+      <div class="admin-modal__header">
+        <h3 class="admin-modal__title" id="orderModalTitle">Order Details</h3>
+        <button type="button" class="admin-modal__close" onclick="admin.modal('orderQuickModal').close()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="admin-modal__body" id="orderModalBody">
+        <p style="text-align: center; padding: 30px;"><i data-lucide="loader-2" class="lucide-spin"></i> Loading order details...</p>
+      </div>
+      <div class="admin-modal__footer">
+        <button type="button" class="btn btn--outline btn--sm" onclick="admin.modal('orderQuickModal').close()">Close</button>
+        <a href="orders.html" id="orderModalFullLink" class="btn btn--primary btn--sm">Manage in Orders</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="js/admin-common.js"></script>
+  <script src="js/dashboard.js"></script>
+
+</body>
+</html>

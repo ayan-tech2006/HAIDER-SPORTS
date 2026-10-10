@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin Login - Haider Sports</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Admin Styles -->
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-login-body">
+
+  <div class="admin-login-card">
+    <div class="admin-login-brand">
+      <div class="admin-login-logo">
+        <i data-lucide="flame"></i>
+        <span>HAIDERSPORTS</span>
+      </div>
+      <span class="admin-login-badge">Store Control Center</span>
+      <h2 class="admin-login-title">Administrator Sign In</h2>
+      <p class="admin-login-subtitle">Enter your credentials to access store operations</p>
+    </div>
+
+    <!-- Alert Box -->
+    <div class="admin-login-alert" id="loginAlert" role="alert">
+      <i data-lucide="alert-circle" id="alertIcon"></i>
+      <span id="alertMessage">Invalid login credentials</span>
+    </div>
+
+    <!-- Login Form -->
+    <form id="adminLoginForm" novalidate autocomplete="on">
+      <div class="form-group">
+        <label for="adminEmail" class="form-label">Email Address <span class="req">*</span></label>
+        <input 
+          type="email" 
+          id="adminEmail" 
+          class="form-control" 
+          placeholder="admin@haidersports.pk" 
+          required 
+          autocomplete="email"
+          autofocus
+        >
+      </div>
+
+      <div class="form-group">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <label for="adminPassword" class="form-label" style="margin-bottom: 0;">Password <span class="req">*</span></label>
+          <a href="#" id="forgotPasswordLink" style="font-size: 12px; color: var(--primary); font-weight: 500;">Forgot Password?</a>
+        </div>
+        <div class="password-input-wrap">
+          <input 
+            type="password" 
+            id="adminPassword" 
+            class="form-control" 
+            placeholder="••••••••••••" 
+            required 
+            autocomplete="current-password"
+          >
+          <button type="button" class="password-toggle-btn" id="togglePasswordBtn" aria-label="Toggle password visibility">
+            <i data-lucide="eye" id="togglePasswordIcon"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn--primary" id="loginSubmitBtn" style="width: 100%; height: 44px; margin-top: 10px;">
+        <span id="loginBtnText">Sign In to Dashboard</span>
+        <i data-lucide="arrow-right" id="loginBtnIcon"></i>
+      </button>
+
+      <div style="margin-top: 24px; text-align: center;">
+        <a href="../index.html" style="font-size: 12.5px; color: #71717a; display: inline-flex; align-items: center; gap: 6px;">
+          <i data-lucide="arrow-left"></i> Return to Public Storefront
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div class="admin-modal-backdrop" id="forgotModal">
+    <div class="admin-modal" style="max-width: 420px;">
+      <div class="admin-modal__header">
+        <h3 class="admin-modal__title">Reset Password</h3>
+        <button type="button" class="admin-modal__close" id="closeForgotModal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="admin-modal__body">
+        <p style="font-size: 13.5px; color: #52525b; margin-bottom: 16px;">
+          Enter your registered administrator email address. We will send you a secure link to reset your password.
+        </p>
+        <div class="form-group">
+          <label for="resetEmail" class="form-label">Email Address</label>
+          <input type="email" id="resetEmail" class="form-control" placeholder="admin@haidersports.pk">
+        </div>
+        <div id="resetAlert" style="display:none; font-size:12.5px; padding:10px; border-radius:6px; margin-top:10px;"></div>
+      </div>
+      <div class="admin-modal__footer">
+        <button type="button" class="btn btn--outline btn--sm" id="cancelForgotBtn">Cancel</button>
+        <button type="button" class="btn btn--primary btn--sm" id="sendResetBtn">Send Reset Link</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="js/admin-common.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const sb = window.supabaseClient || (typeof supabase !== 'undefined' && supabase.createClient ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null);
+
+      // Check if already authenticated as admin
+      if (sb) {
+        try {
+          const { data: { session } } = await sb.auth.getSession();
+          if (session) {
+            const { data: isAdmin } = await sb.rpc('is_admin');
+            if (isAdmin) {
+              window.location.href = 'dashboard.html';
+              return;
+            }
+          }
+        } catch (e) {
+          // continue to login
+        }
+      }
+
+      const form = document.getElementById('adminLoginForm');
+      const emailInput = document.getElementById('adminEmail');
+      const passwordInput = document.getElementById('adminPassword');
+      const submitBtn = document.getElementById('loginSubmitBtn');
+      const btnText = document.getElementById('loginBtnText');
+      const btnIcon = document.getElementById('loginBtnIcon');
+      const alertBox = document.getElementById('loginAlert');
+      const alertMsg = document.getElementById('alertMessage');
+      const togglePwBtn = document.getElementById('togglePasswordBtn');
+
+      if (window.lucide) lucide.createIcons();
+
+      // Password toggle
+      togglePwBtn.addEventListener('click', () => {
+        const isPassword = passwordInput.type === 'password';
+        passwordInput.type = isPassword ? 'text' : 'password';
+        togglePwBtn.innerHTML = `<i data-lucide="${isPassword ? 'eye-off' : 'eye'}"></i>`;
+        if (window.lucide) lucide.createIcons();
+      });
+
+      function showAlert(msg, isSuccess = false) {
+        alertBox.style.display = 'flex';
+        alertBox.className = isSuccess ? 'admin-login-alert admin-login-alert--success' : 'admin-login-alert';
+        alertMsg.textContent = msg;
+        const iconEl = alertBox.querySelector('[data-lucide], i');
+        if (iconEl) {
+          iconEl.setAttribute('data-lucide', isSuccess ? 'check-circle-2' : 'alert-circle');
+          if (window.lucide) lucide.createIcons();
+        }
+      }
+
+      function hideAlert() {
+        alertBox.style.display = 'none';
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideAlert();
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!email || !password) {
+          showAlert('Please enter both email and password.');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        btnText.textContent = 'Verifying credentials...';
+        btnIcon.setAttribute('data-lucide', 'loader-2');
+        if (window.lucide) lucide.createIcons();
+
+        try {
+          if (!sb) throw new Error('Supabase configuration missing.');
+
+          // 1. Authenticate with Supabase Auth
+          const { data, error } = await sb.auth.signInWithPassword({
+            email,
+            password
+          });
+
+          if (error) {
+            throw error;
+          }
+
+          // 2. Check if user has admin privileges
+          btnText.textContent = 'Checking authorization...';
+          const { data: isAdmin, error: rpcErr } = await sb.rpc('is_admin');
+
+          if (rpcErr || !isAdmin) {
+            // Sign out immediately if not in public.admins
+            await sb.auth.signOut();
+            throw new Error('Access Denied: Your account does not have administrator privileges.');
+          }
+
+          // 3. Success -> Forward to dashboard
+          btnText.textContent = 'Authorized! Redirecting...';
+          btnIcon.setAttribute('data-lucide', 'check-circle-2');
+          if (window.lucide) lucide.createIcons();
+          showAlert('Login successful! Loading dashboard...', true);
+
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 400);
+
+        } catch (err) {
+          console.error('Login error:', err);
+          showAlert(err.message || 'Invalid email or password.');
+          submitBtn.disabled = false;
+          btnText.textContent = 'Sign In to Dashboard';
+          btnIcon.setAttribute('data-lucide', 'arrow-right');
+          if (window.lucide) lucide.createIcons();
+        }
+      });
+
+      // Forgot Password Modal
+      const forgotLink = document.getElementById('forgotPasswordLink');
+      const forgotModal = document.getElementById('forgotModal');
+      const closeForgot = document.getElementById('closeForgotModal');
+      const cancelForgot = document.getElementById('cancelForgotBtn');
+      const sendResetBtn = document.getElementById('sendResetBtn');
+      const resetEmail = document.getElementById('resetEmail');
+      const resetAlert = document.getElementById('resetAlert');
+
+      function openModal() {
+        forgotModal.classList.add('open');
+        resetEmail.value = emailInput.value.trim();
+        resetAlert.style.display = 'none';
+      }
+      function closeModal() {
+        forgotModal.classList.remove('open');
+      }
+
+      forgotLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        openModal();
+      });
+      closeForgot.addEventListener('click', closeModal);
+      cancelForgot.addEventListener('click', closeModal);
+
+      sendResetBtn.addEventListener('click', async () => {
+        const mail = resetEmail.value.trim();
+        if (!mail) {
+          resetAlert.style.display = 'block';
+          resetAlert.style.background = '#fef2f2';
+          resetAlert.style.color = '#b91c1c';
+          resetAlert.textContent = 'Please enter your email.';
+          return;
+        }
+
+        sendResetBtn.disabled = true;
+        sendResetBtn.textContent = 'Sending...';
+
+        try {
+          const { error } = await sb.auth.resetPasswordForEmail(mail, {
+            redirectTo: window.location.origin + '/admin/index.html'
+          });
+          if (error) throw error;
+
+          resetAlert.style.display = 'block';
+          resetAlert.style.background = '#ecfdf5';
+          resetAlert.style.color = '#047857';
+          resetAlert.textContent = 'Password reset instructions have been sent to your email.';
+          setTimeout(closeModal, 2500);
+        } catch (err) {
+          resetAlert.style.display = 'block';
+          resetAlert.style.background = '#fef2f2';
+          resetAlert.style.color = '#b91c1c';
+          resetAlert.textContent = err.message || 'Could not send reset email.';
+        } finally {
+          sendResetBtn.disabled = false;
+          sendResetBtn.textContent = 'Send Reset Link';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Your Order - Haider Sports</title>
+  <meta name="description" content="Track your sports and cricket equipment delivery status across Pakistan on Haider Sports.">
+
+  <!-- Google Fonts: Exo 2 (Headings) & Poppins (Body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6.5.1 -->
+  <link rel="stylesheet" href="css/icons.css">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo"><span class="logo__icon"><i class="fa-solid fa-baseball-bat-ball"></i></span>HAIDERSPORTS</a>
+      <nav class="nav" id="nav">
+        <a href="index.html" class="nav__link">Home</a>
+        <a href="shop.html" class="nav__link">Shop <i class="fa-solid fa-chevron-down"></i></a>
+        <a href="shop.html#/cricket" class="nav__link">Cricket Gear</a>
+        <a href="shop.html#/footwear" class="nav__link">Footwear</a>
+        <a href="about.html" class="nav__link">About</a>
+        <a href="contact.html" class="nav__link">Contact</a>
+      </nav>
+      <div class="header__icons">
+        <a href="#" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></a>
+        <a href="#" aria-label="Account"><i class="fa-regular fa-user"></i></a>
+        <a href="wishlist.html" aria-label="Wishlist" class="badge-wrap"><i class="fa-regular fa-heart"></i><span class="badge" id="wishCount">0</span></a>
+        <a href="cart.html" aria-label="Cart" class="badge-wrap"><i class="fa-solid fa-bag-shopping"></i><span class="badge" id="cartCount">0</span></a>
+        <button class="menu-btn" id="menuBtn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= PAGE BANNER + BREADCRUMBS ================= -->
+  <section class="page-banner">
+    <div class="container">
+      <h1>Track Your Order</h1>
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <a href="shop.html">Shop</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span aria-current="page">Order Tracking</span>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ================= TRACKING CONTENT ================= -->
+  <main class="section track-section">
+    <div class="container track-wrap">
+      <!-- Search Form Card -->
+      <div class="track-card" id="trackFormCard">
+        <h2 class="track-card__title">Enter Order Details</h2>
+        <p class="track-card__subtitle">
+          Please provide your Order ID and phone number to look up live courier tracking and delivery progress.
+        </p>
+
+        <form id="trackForm">
+          <div class="track-form-grid">
+            <div class="track-field">
+              <label for="orderNumberInput">Order Number *</label>
+              <div class="track-input-wrap">
+                <i class="fa-solid fa-receipt"></i>
+                <input type="text" id="orderNumberInput" placeholder="e.g. RS-10234" required autocomplete="off">
+              </div>
+            </div>
+            <div class="track-field">
+              <label for="phoneInput">Phone Number *</label>
+              <div class="track-input-wrap">
+                <i class="fa-solid fa-phone"></i>
+                <input type="tel" id="phoneInput" placeholder="03XXXXXXXXX" required autocomplete="tel">
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn--primary track-submit-btn" id="trackSubmitBtn">
+            <i class="fa-solid fa-location-crosshairs"></i> Track Order
+          </button>
+        </form>
+
+        <!-- Error Alert -->
+        <div class="track-error-alert" id="trackErrorAlert" style="display:none;" role="alert">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <div>
+            <strong>Order not found</strong>
+            <p>No order found with these details. Please verify your order number and phone number.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Card -->
+      <div class="track-card" id="trackResultCard" style="display:none;">
+        <div class="track-result-header">
+          <div class="track-num-badge">
+            <span>Order Reference:</span>
+            <strong id="resOrderNum">RS-00000</strong>
+          </div>
+          <div id="resStatusBadge">
+            <!-- Injected status pill -->
+          </div>
+        </div>
+
+        <!-- Cancelled Banner if cancelled -->
+        <div class="track-cancel-banner" id="cancelBanner" style="display:none;">
+          <i class="fa-solid fa-ban"></i>
+          <div>
+            <strong>Order Cancelled</strong>
+            <p id="cancelReasonText">This order has been cancelled.</p>
+          </div>
+        </div>
+
+        <!-- Timeline Section -->
+        <div class="timeline-wrap" id="timelineSection">
+          <div class="timeline-steps" id="timelineSteps">
+            <!-- Injected by js/order-tracking.js -->
+          </div>
+        </div>
+
+        <!-- Courier Details Box (if assigned or shipped) -->
+        <div class="courier-box" id="courierBox" style="display:none;">
+          <div class="courier-info">
+            <div class="courier-icon">
+              <i class="fa-solid fa-truck-fast"></i>
+            </div>
+            <div class="courier-details">
+              <span id="courierLabel">Assigned Courier Partner</span>
+              <strong id="courierName">TCS Express</strong>
+            </div>
+          </div>
+          <div class="courier-tracking">
+            <span style="font-size:12px; color:#64748b; display:block;">Tracking ID:</span>
+            <strong id="courierTrackId" style="font-size:15px; color:var(--primary); font-family:monospace;">TCS-000000</strong>
+          </div>
+        </div>
+
+        <!-- Customer & Order Information Grid -->
+        <div class="track-info-grid">
+          <div class="track-info-col">
+            <h5>Delivery Destination</h5>
+            <p id="resCustomerName"><strong>Customer Name</strong></p>
+            <p id="resCustomerAddress">Street Address, City</p>
+            <p id="resCustomerPhone">Phone: 03001234567</p>
+          </div>
+          <div class="track-info-col">
+            <h5>Payment &amp; Booking Info</h5>
+            <p id="resOrderDate">Date: 01 Jan 2026</p>
+            <p id="resPaymentMethod">Method: Cash on Delivery</p>
+            <p id="resDeliveryFee">Delivery: Free Delivery</p>
+          </div>
+        </div>
+
+        <!-- Items Summary -->
+        <div class="track-items">
+          <h5>Ordered Equipment</h5>
+          <div id="trackItemsList">
+            <!-- Injected list -->
+          </div>
+          <div class="track-total-row">
+            <span>Total Payable Amount:</span>
+            <strong id="resGrandTotal">Rs. 0</strong>
+          </div>
+        </div>
+
+        <!-- Action Links -->
+        <div class="track-actions">
+          <a href="#" class="btn btn--whatsapp" id="trackWhatsappBtn" target="_blank" rel="noopener">
+            <i class="fa-brands fa-whatsapp"></i> Inquire on WhatsApp
+          </a>
+          <a href="shop.html" class="btn btn--dark">
+            Browse More Gear <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div class="footer__col">
+        <a href="index.html" class="logo"><span class="logo__icon"><i class="fa-solid fa-baseball-bat-ball"></i></span>HAIDERSPORTS</a>
+        <p>Premium cricket gear and sportswear crafted for performance, durability, and champions across Pakistan.</p>
+        <div class="socials">
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="shop.html#/cricket">Cricket Gear</a></li>
+          <li><a href="shop.html#/footwear">Footwear</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h5>Services</h5>
+        <ul>
+          <li><a href="order-tracking.html">Order Tracking</a></li>
+          <li><a href="wishlist.html">Wishlist</a></li>
+          <li><a href="shipping-policy.html">Shipping Info</a></li>
+          <li><a href="return-policy.html">Returns &amp; Exchange</a></li>
+          <li><a href="privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="terms.html">Terms &amp; Conditions</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h5>Newsletter</h5>
+        <p>Subscribe to get the latest deals on bats, kits and more.</p>
+        <form class="newsletter" id="newsletter">
+          <input type="email" placeholder="Your email address" required>
+          <button type="submit" aria-label="Subscribe"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div class="container footer__bottom-inner">
+        <p>&copy; <span id="year"></span> HAIDERSPORTS. All rights reserved.</p>
+        <div class="payments">
+          <i class="fa-brands fa-cc-visa"></i><i class="fa-brands fa-cc-mastercard"></i><i class="fa-solid fa-money-bill-wave"></i>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/dummy-data.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/order-tracking.js"></script>
+</body>
+</html>

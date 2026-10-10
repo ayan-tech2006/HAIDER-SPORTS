@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Article Editor - Haider Sports Admin</title>
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Admin Styles -->
+  <link rel="stylesheet" href="css/admin.css">
+
+  <style>
+    /* Rich text editor styling */
+    .rich-editor-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+    .rich-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      color: #4b5563;
+      font-size: 13px;
+      cursor: pointer;
+      background: #fff;
+      border: 1px solid var(--border);
+      transition: all 0.15s ease;
+    }
+    .rich-btn:hover {
+      background: #e2e8f0;
+      color: var(--heading);
+    }
+    .rich-editor-area {
+      min-height: 320px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      background: #fff;
+      outline: none;
+      font-size: 14.5px;
+      line-height: 1.7;
+    }
+    .rich-editor-area:focus {
+      border-color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Admin Shell Layout -->
+  <div id="adminLayout">
+    <form id="blogEditForm">
+
+      <!-- Header Actions Row -->
+      <div class="admin-header-row">
+        <div>
+          <a href="blog.html" style="font-size: 13px; color: #64748b; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 4px; text-decoration: none;">
+            <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i> Back to Articles
+          </a>
+          <h2 style="font-size: 22px; font-weight: 800; color: var(--heading);" id="blogPageHeading">Write Article</h2>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <a href="#" target="_blank" class="btn btn--outline btn--sm" id="previewArticleBtn" style="display: none;">
+            <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> Preview on Site
+          </a>
+          <a href="blog.html" class="btn btn--outline btn--sm">Discard</a>
+          <button type="submit" class="btn btn--primary btn--sm" id="savePostBtn">
+            <i data-lucide="check" style="width: 14px; height: 14px;"></i> Save Article
+          </button>
+        </div>
+      </div>
+
+      <input type="hidden" id="editPostId" value="">
+
+      <!-- Editor Grid -->
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+
+        <!-- Left Column: Content & SEO -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+
+          <!-- Article Details Card -->
+          <div class="admin-card" style="margin-bottom: 0;">
+            <div class="admin-card__header">
+              <h3 class="admin-card__title">Article Content</h3>
+            </div>
+            <div class="admin-card__body">
+              <div class="form-group">
+                <label for="postTitle" class="form-label">Article Title <span class="req">*</span></label>
+                <input type="text" id="postTitle" class="form-control" placeholder="e.g. How to Knock In and Oil a Cricket Bat Properly" required autofocus>
+              </div>
+
+              <div class="form-group">
+                <label for="postSlug" class="form-label">URL Slug <span class="req">*</span></label>
+                <input type="text" id="postSlug" class="form-control" placeholder="how-to-knock-in-cricket-bat" required>
+                <div class="form-hint">Public URL: <code>/post.html?slug=...</code></div>
+              </div>
+
+              <div class="form-group">
+                <label for="postExcerpt" class="form-label">Excerpt / Summary <span class="req">*</span></label>
+                <textarea id="postExcerpt" class="form-control" rows="2" placeholder="Short introductory summary displayed on blog listings and cards..." required></textarea>
+              </div>
+
+              <!-- Rich Text Area -->
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Article Body &amp; Guide Content</label>
+                <div class="rich-editor-toolbar">
+                  <button type="button" class="rich-btn" data-cmd="formatBlock" data-val="h2" title="Heading 2"><b>H2</b></button>
+                  <button type="button" class="rich-btn" data-cmd="formatBlock" data-val="h3" title="Heading 3"><b>H3</b></button>
+                  <button type="button" class="rich-btn" data-cmd="bold" title="Bold"><b>B</b></button>
+                  <button type="button" class="rich-btn" data-cmd="italic" title="Italic"><i>I</i></button>
+                  <button type="button" class="rich-btn" data-cmd="insertUnorderedList" title="Bullet List"><i data-lucide="list" style="width: 14px; height: 14px;"></i></button>
+                  <button type="button" class="rich-btn" data-cmd="insertOrderedList" title="Numbered List"><i data-lucide="list-ordered" style="width: 14px; height: 14px;"></i></button>
+                  <button type="button" class="rich-btn" data-cmd="createLink" title="Link"><i data-lucide="link" style="width: 14px; height: 14px;"></i></button>
+                  <button type="button" class="rich-btn" data-cmd="insertImage" title="Insert Image by URL"><i data-lucide="image" style="width: 14px; height: 14px;"></i></button>
+                  <button type="button" class="rich-btn" data-cmd="removeFormat" title="Clear Formatting"><i data-lucide="eraser" style="width: 14px; height: 14px;"></i></button>
+                </div>
+                <div class="rich-editor-area" id="postBodyEditor" contenteditable="true"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SEO Card -->
+          <div class="admin-card" style="margin-bottom: 0;">
+            <div class="admin-card__header">
+              <h3 class="admin-card__title">Search Engine Optimization (SEO)</h3>
+            </div>
+            <div class="admin-card__body">
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between;">
+                  <label for="postSeoTitle" class="form-label">Meta Title</label>
+                  <span id="seoTitleCounter" style="font-size: 11px; color: #64748b;">0 / 60</span>
+                </div>
+                <input type="text" id="postSeoTitle" class="form-control" placeholder="Defaults to article title if empty">
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0;">
+                <div style="display: flex; justify-content: space-between;">
+                  <label for="postSeoDesc" class="form-label">Meta Description</label>
+                  <span id="seoDescCounter" style="font-size: 11px; color: #64748b;">0 / 160</span>
+                </div>
+                <textarea id="postSeoDesc" class="form-control" rows="2" placeholder="Defaults to excerpt if empty"></textarea>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Settings & Cover Image -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+
+          <!-- Publishing Settings Card -->
+          <div class="admin-card" style="margin-bottom: 0;">
+            <div class="admin-card__header">
+              <h3 class="admin-card__title">Publishing Status</h3>
+            </div>
+            <div class="admin-card__body">
+              <div class="form-group">
+                <label class="form-check">
+                  <input type="checkbox" id="postIsPublished" checked>
+                  <span style="font-weight: 700; color: var(--heading);">Publish Live to Store</span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label for="postPubDate" class="form-label">Publish Date</label>
+                <input type="date" id="postPubDate" class="form-control">
+              </div>
+
+              <div class="form-group">
+                <label for="postAuthor" class="form-label">Author Name</label>
+                <input type="text" id="postAuthor" class="form-control" value="Haider Sports Team">
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="postCategory" class="form-label">Article Category <span class="req">*</span></label>
+                <input type="text" id="postCategory" class="form-control" placeholder="e.g. Bat Care, Gear Guide, Tips" value="Bat Care" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cover Image Card -->
+          <div class="admin-card" style="margin-bottom: 0;">
+            <div class="admin-card__header">
+              <h3 class="admin-card__title">Featured Cover Image</h3>
+            </div>
+            <div class="admin-card__body">
+              <div class="form-group">
+                <label for="postCoverUrl" class="form-label">Cover Image URL <span class="req">*</span></label>
+                <div style="display: flex; gap: 8px;">
+                  <input type="text" id="postCoverUrl" class="form-control" placeholder="Image URL..." required>
+                  <label class="btn btn--outline btn--sm" style="cursor: pointer; white-space: nowrap;">
+                    <i data-lucide="upload-cloud" style="width: 14px; height: 14px;"></i>
+                    <input type="file" id="postCoverFileInput" accept="image/*" style="display: none;">
+                  </label>
+                </div>
+              </div>
+
+              <div id="postCoverPreviewBox" style="margin-top: 10px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); min-height: 140px; display: flex; align-items: center; justify-content: center; background: #f8fafc;">
+                <span style="font-size: 12px; color: #94a3b8;">No cover image selected</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="js/admin-common.js"></script>
+  <script src="js/blog-edit.js"></script>
+
+</body>
+</html>

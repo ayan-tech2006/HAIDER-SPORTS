@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Home Page Content Manager - Haider Sports Admin</title>
+
+  <!-- Google Fonts & Lucide Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Admin Styles -->
+  <link rel="stylesheet" href="css/admin.css">
+
+  <style>
+    /* Content Manager Section Tabs */
+    .content-nav-tabs {
+      display: flex;
+      gap: 10px;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 24px;
+    }
+    .content-nav-btn {
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #64748b;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+    .content-nav-btn:hover {
+      color: var(--heading);
+    }
+    .content-nav-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* Card color preview pills */
+    .color-pill {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    .color-pill--orange { background: #f15a24; }
+    .color-pill--blue { background: #2563eb; }
+    .color-pill--dark { background: #111111; }
+    .color-pill--pink { background: #ec4899; }
+    .color-pill--green { background: #10b981; }
+    .color-pill--yellow { background: #eab308; }
+
+    /* Category card preview */
+    .promo-card-preview {
+      border-radius: 12px;
+      padding: 14px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .promo-card-preview--orange { background: #f15a24; }
+    .promo-card-preview--blue { background: #2563eb; }
+    .promo-card-preview--dark { background: #1e293b; }
+    .promo-card-preview--pink { background: #db2777; }
+    .promo-card-preview--green { background: #059669; }
+    .promo-card-preview--yellow { background: #ca8a04; }
+
+    .promo-card-preview img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Admin Shell Layout -->
+  <div id="adminLayout">
+
+    <!-- Header Actions Row -->
+    <div class="admin-header-row">
+      <div>
+        <h2 style="font-size: 22px; font-weight: 800; color: var(--heading);">Home Page Content</h2>
+        <p style="font-size: 13px; color: #64748b; margin-top: 2px;">Customize hero carousels, category slider banners, flash deals, and featured products.</p>
+      </div>
+
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <a href="../index.html" target="_blank" class="btn btn--outline btn--sm" style="display: inline-flex; align-items: center; gap: 6px;">
+          <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> Open Home Page
+        </a>
+        <button type="button" class="btn btn--dark btn--sm" id="refreshContentBtn" style="display: inline-flex; align-items: center; gap: 6px;">
+          <i data-lucide="rotate-cw" style="width: 14px; height: 14px;"></i> Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Section Navigation Tabs -->
+    <div class="content-nav-tabs">
+      <button type="button" class="content-nav-btn active" data-tab="heroTab">
+        <i data-lucide="layers" style="width: 15px; height: 15px;"></i> Hero Carousels
+      </button>
+      <button type="button" class="content-nav-btn" data-tab="catSliderTab">
+        <i data-lucide="layout-grid" style="width: 15px; height: 15px;"></i> Category Slider
+      </button>
+      <button type="button" class="content-nav-btn" data-tab="offerTab">
+        <i data-lucide="timer" style="width: 15px; height: 15px;"></i> Flash Deal &amp; Offer
+      </button>
+      <button type="button" class="content-nav-btn" data-tab="featuredTab">
+        <i data-lucide="sparkles" style="width: 15px; height: 15px;"></i> Featured Products
+      </button>
+    </div>
+
+    <!-- TAB 1: HERO CAROUSELS -->
+    <div id="heroTab" class="tab-pane">
+      <div class="admin-card">
+        <div class="admin-card__header">
+          <div>
+            <h3 class="admin-card__title">Hero Slides</h3>
+            <p style="font-size: 12px; color: #64748b; margin-top: 2px;">Top homepage slider with full-width background images, headline and action buttons.</p>
+          </div>
+          <button type="button" class="btn btn--primary btn--sm" id="addHeroSlideBtn" style="display: inline-flex; align-items: center; gap: 6px;">
+            <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Add New Slide
+          </button>
+        </div>
+        <div class="admin-card__body" style="padding: 0;">
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">Order</th>
+                  <th style="width: 120px;">Preview</th>
+                  <th>Headline &amp; Subtitle</th>
+                  <th>Action Button</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="heroTableBody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: CATEGORY SLIDER CARDS -->
+    <div id="catSliderTab" class="tab-pane" style="display: none;">
+      <div class="admin-card">
+        <div class="admin-card__header">
+          <div>
+            <h3 class="admin-card__title">Category Slider Cards</h3>
+            <p style="font-size: 12px; color: #64748b; margin-top: 2px;">Horizontal sliding cards showcasing top departments and equipment categories.</p>
+          </div>
+          <button type="button" class="btn btn--primary btn--sm" id="addCatCardBtn" style="display: inline-flex; align-items: center; gap: 6px;">
+            <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Add Category Card
+          </button>
+        </div>
+        <div class="admin-card__body" style="padding: 0;">
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width: 50px;">Order</th>
+                  <th>Card Preview</th>
+                  <th>Card Title &amp; Subtitle</th>
+                  <th>Target Link</th>
+                  <th>Color Theme</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="catCardTableBody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: FLASH DEAL & OFFER -->
+    <div id="offerTab" class="tab-pane" style="display: none;">
+      <div class="admin-card">
+        <div class="admin-card__header">
+          <h3 class="admin-card__title">Promotional Offer &amp; Countdown Timer</h3>
+        </div>
+        <div class="admin-card__body">
+          <form id="offerForm">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              <div class="form-group">
+                <label for="offerTitle" class="form-label">Offer Headline <span class="req">*</span></label>
+                <input type="text" id="offerTitle" class="form-control" placeholder="e.g. End of Season Cricket Clearance" required>
+              </div>
+
+              <div class="form-group">
+                <label for="offerSubtitle" class="form-label">Offer Subtitle / Badge</label>
+                <input type="text" id="offerSubtitle" class="form-control" placeholder="e.g. Flat 30% Off on Selected Tape Ball Bats">
+              </div>
+
+              <div class="form-group">
+                <label for="offerEndTime" class="form-label">Countdown Expiry Date &amp; Time <span class="req">*</span></label>
+                <input type="datetime-local" id="offerEndTime" class="form-control" required>
+                <div class="form-hint">The countdown clock on the home page ticks down to this exact target timestamp.</div>
+              </div>
+
+              <div class="form-group">
+                <label for="offerBtnLink" class="form-label">Action Button Link</label>
+                <input type="text" id="offerBtnLink" class="form-control" placeholder="shop.html#/cricket/bats">
+              </div>
+
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label for="offerImageUrl" class="form-label">Offer Banner Image</label>
+                <div style="display: flex; gap: 10px;">
+                  <input type="text" id="offerImageUrl" class="form-control" placeholder="Image URL or upload below...">
+                  <label class="btn btn--outline btn--sm" style="cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;">
+                    <i data-lucide="upload-cloud" style="width: 14px; height: 14px;"></i> Upload Image
+                    <input type="file" id="offerFileInput" accept="image/*" style="display: none;">
+                  </label>
+                </div>
+                <div id="offerImgPreview" style="margin-top: 10px;"></div>
+              </div>
+
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label class="form-check">
+                  <input type="checkbox" id="offerIsActive" checked>
+                  <span style="font-weight: 600; color: var(--heading);">Show Offer Section on Home Page</span>
+                </label>
+              </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+              <button type="submit" class="btn btn--primary" id="saveOfferBtn" style="display: inline-flex; align-items: center; gap: 6px;">
+                <i data-lucide="save" style="width: 15px; height: 15px;"></i> Save Offer Settings
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: FEATURED PRODUCTS -->
+    <div id="featuredTab" class="tab-pane" style="display: none;">
+      <div class="admin-card">
+        <div class="admin-card__header">
+          <div>
+            <h3 class="admin-card__title">Home Page Featured Products</h3>
+            <p style="font-size: 12px; color: #64748b; margin-top: 2px;">Curate items highlighted on the home page "Featured Products" showcase.</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="searchCatalogInput" class="form-control form-control--sm" placeholder="Search product to feature..." style="width: 250px;">
+          </div>
+        </div>
+        <div class="admin-card__body" style="padding: 0;">
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width: 60px;">Image</th>
+                  <th>Product Title</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th style="text-align: center;">Featured on Home</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="featuredTableBody">
+                <!-- Injected via home-content.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Hero Slide Modal -->
+  <div class="admin-modal-backdrop" id="heroModal">
+    <div class="admin-modal">
+      <div class="admin-modal__header">
+        <h3 class="admin-modal__title" id="heroModalTitle">Add Hero Slide</h3>
+        <button type="button" class="admin-modal__close" onclick="admin.modal.close('heroModal')">&times;</button>
+      </div>
+      <form id="heroSlideForm">
+        <div class="admin-modal__body">
+          <input type="hidden" id="heroSlideId" value="">
+
+          <div class="form-group">
+            <label for="heroTitle" class="form-label">Headline Title <span class="req">*</span></label>
+            <input type="text" id="heroTitle" class="form-control" placeholder="e.g. Gear Up For The Game" required>
+          </div>
+
+          <div class="form-group">
+            <label for="heroSubtitle" class="form-label">Subtitle / Top Tag</label>
+            <input type="text" id="heroSubtitle" class="form-control" placeholder="e.g. Premium Cricket Gear">
+          </div>
+
+          <div class="form-group">
+            <label for="heroImage" class="form-label">Background Image <span class="req">*</span></label>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" id="heroImage" class="form-control" placeholder="Image URL (1800x600 recommended)" required>
+              <label class="btn btn--outline btn--sm" style="cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;">
+                <i data-lucide="upload-cloud" style="width: 14px; height: 14px;"></i> Upload
+                <input type="file" id="heroFileInput" accept="image/*" style="display: none;">
+              </label>
+            </div>
+            <div id="heroPreviewBox" style="margin-top: 8px;"></div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div class="form-group">
+              <label for="heroBtnText" class="form-label">Button Text</label>
+              <input type="text" id="heroBtnText" class="form-control" value="Shop Now">
+            </div>
+
+            <div class="form-group">
+              <label for="heroBtnLink" class="form-label">Button Link</label>
+              <input type="text" id="heroBtnLink" class="form-control" value="shop.html">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-check">
+              <input type="checkbox" id="heroIsActive" checked>
+              <span style="font-weight: 600; color: var(--heading);">Active in Slider</span>
+            </label>
+          </div>
+        </div>
+        <div class="admin-modal__footer">
+          <button type="button" class="btn btn--outline btn--sm" onclick="admin.modal.close('heroModal')">Cancel</button>
+          <button type="submit" class="btn btn--primary btn--sm" id="saveHeroBtn">Save Slide</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Category Card Modal -->
+  <div class="admin-modal-backdrop" id="catCardModal">
+    <div class="admin-modal">
+      <div class="admin-modal__header">
+        <h3 class="admin-modal__title" id="catCardModalTitle">Add Category Card</h3>
+        <button type="button" class="admin-modal__close" onclick="admin.modal.close('catCardModal')">&times;</button>
+      </div>
+      <form id="catCardForm">
+        <div class="admin-modal__body">
+          <input type="hidden" id="catCardId" value="">
+
+          <div class="form-group">
+            <label for="catCardTitle" class="form-label">Title <span class="req">*</span></label>
+            <input type="text" id="catCardTitle" class="form-control" placeholder="e.g. Tape Ball Bats" required>
+          </div>
+
+          <div class="form-group">
+            <label for="catCardSubtitle" class="form-label">Subtitle</label>
+            <input type="text" id="catCardSubtitle" class="form-control" placeholder="e.g. Hot Collection">
+          </div>
+
+          <div class="form-group">
+            <label for="catCardColor" class="form-label">Card Background Color</label>
+            <select id="catCardColor" class="form-control">
+              <option value="orange">🟠 Orange (--primary)</option>
+              <option value="blue">🔵 Royal Blue</option>
+              <option value="dark">⚫ Sleek Dark</option>
+              <option value="pink">🌸 Neon Pink</option>
+              <option value="green">🟢 Turf Green</option>
+              <option value="yellow">🟡 Bright Yellow</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="catCardImage" class="form-label">Product / Category Thumbnail</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" id="catCardImage" class="form-control" placeholder="Image URL">
+              <label class="btn btn--outline btn--sm" style="cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;">
+                <i data-lucide="upload-cloud" style="width: 14px; height: 14px;"></i> Upload
+                <input type="file" id="catCardFileInput" accept="image/*" style="display: none;">
+              </label>
+            </div>
+            <div id="catCardPreviewBox" style="margin-top: 8px;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="catCardLink" class="form-label">Target Shop Link</label>
+            <input type="text" id="catCardLink" class="form-control" placeholder="shop.html#/cricket/bats/tape-ball-bats">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-check">
+              <input type="checkbox" id="catCardIsActive" checked>
+              <span style="font-weight: 600; color: var(--heading);">Active in Category Slider</span>
+            </label>
+          </div>
+        </div>
+        <div class="admin-modal__footer">
+          <button type="button" class="btn btn--outline btn--sm" onclick="admin.modal.close('catCardModal')">Cancel</button>
+          <button type="submit" class="btn btn--primary btn--sm" id="saveCatCardBtn">Save Card</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="js/admin-common.js"></script>
+  <script src="js/home-content.js"></script>
+
+</body>
+</html>

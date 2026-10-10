@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Product Editor - Haider Sports Admin</title>
+
+  <!-- Google Fonts & Lucide Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Admin Styles -->
+  <link rel="stylesheet" href="css/admin.css">
+
+  <style>
+    /* Rich text editor styling */
+    .rich-editor-toolbar {
+      display: flex;
+      gap: 6px;
+      padding: 8px 12px;
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+    .rich-btn {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      color: #4b5563;
+      font-size: 13px;
+      cursor: pointer;
+      background: #fff;
+      border: 1px solid var(--border);
+      transition: all 0.15s ease;
+    }
+    .rich-btn:hover {
+      background: #e5e7eb;
+      color: var(--heading);
+    }
+    .rich-editor-area {
+      min-height: 160px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      background: #fff;
+      outline: none;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .rich-editor-area:focus {
+      border-color: var(--primary);
+    }
+
+    /* Images grid */
+    .images-sort-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .img-card-item {
+      position: relative;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .img-card-item.is-main {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(241, 90, 36, 0.2);
+    }
+    .img-card-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .img-main-badge {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .img-actions-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(4px);
+      display: flex;
+      justify-content: space-around;
+      padding: 6px;
+    }
+    .img-action-btn {
+      color: #fff;
+      font-size: 11px;
+      padding: 4px;
+      border-radius: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .img-action-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Variant rows */
+    .variant-row {
+      display: grid;
+      grid-template-columns: 1.2fr 1.5fr 1fr 1fr 40px;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Admin Shell Layout -->
+  <div id="adminLayout">
+    <form id="productEditForm">
+      <!-- Header Actions Row -->
+      <div class="admin-header-row">
+        <div>
+          <a href="products.html" style="font-size: 13px; color: #6b7280; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 4px; text-decoration: none;">
+            <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i> Back to Products
+          </a>
+          <h2 style="font-size: 22px; font-weight: 800; color: var(--heading);" id="editPageHeading">Add New Product</h2>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <a href="products.html" class="btn btn--outline btn--sm">Discard</a>
+          <button type="submit" class="btn btn--primary btn--sm" id="saveProductBtn" style="display: inline-flex; align-items: center; gap: 6px;">
+            <i data-lucide="check" style="width: 15px; height: 15px;"></i> Save Product
+          </button>
+        </div>
+      </div>
+
+      <input type="hidden" id="editProdId" value="">
+
+      <!-- Editor Two Column Layout -->
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+        
+        <!-- Left Main Column (2fr) -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          
+          <!-- Basic Details Card -->
+          <div class="admin-card" style="margin-bottom: 0;">
+            <div class="admin-card__header">
+              <h3 class="admin-card__title">Product Details</h3>
+            </div>
+            <div class="admin-card__body">
+              <!-- Product Title -->
+              <div class="form-group">
+                <label for="prodName" class="form-label">Product Name <span class="req">*</span></label>
+                <input type="text" id="prodName" class="form-control" placeholder="e.g. Kashmir Willow Tape Bat - Power Hitter" required autofocus>
+              </div>
+
+              <!-- Slug -->
+              <div class="form-group">
+                <label for="prodSlug" class="form-label">URL Slug <span class="req">*</span></label>
+                <input type="text" id="prodSlug" class="form-control" placeholder="e.g. kashmir-willow-tape-bat" required>
+                <div class="form-hint">Used in product page URL: <code>/product.html?slug=...</code></div>
+              </div>
+
+              <!-- Rich Text Description -->
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Description</label>
+                <div class="rich-editor-toolbar">
+                  <button type="button" class="rich-btn" data-cmd="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+                  <button type="button" class="rich-btn" data-cmd="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+                  <button type="button" class="rich-btn" data-cmd="insertUnorderedList" title="Bullet List"><i data-lucide="list" style="width: 14px; height: 14px;"></i></button>
+                  <button type="button" class="rich-btn" data-cmd="insertOrderedList" title="Numbered List"><i data-lucide="list-ordered" style="width: 14px; height: 14px;"></i></button>
+                  <button type="button" class="rich-btn" data-cmd="createLink" title="Add Link"><i data-lucide="link" style="width: 14px; height: 14px;"></i></button>
+                  <button type="button" class="rich-btn" data-cmd="removeFormat" title="Clear Formatting"><i data-lucide="remove-formatting" style="width: 14px; height: 14px;"></i></button>
+                </div>
+                <div class="rich-editor-area" id="prodDescEditor" contenteditable="true" placeholder="Enter full specifications, grains, weight profile, warranty details..."></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Media & Images Card -->
+          <div class="admin-card" style="margin-bottom: 0;">
+            <div class="admin-card__header">
+              <div>
+                <h3 class="admin-card__title">Product Media &amp; Images</h3>
+                <p style="font-size: 12px; color: #6b7280; margin-top: 2px;">First image will be the primary cover displayed in catalogs.</p>
+              </div>
+              <label class="btn btn--outline btn--xs" style="cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                <i data-lucide="upload-cloud" style="width: 14px; height: 14px;"></i> Upload Photos
+                <input type="file" id="multiImageFileInput" accept="image/*" multiple style="display: none;">
+              </label>
+            </div>
+            <div class="admin-card__body">
+              <!-- Drag and drop zone -->
+              <div class="admin-uploader" id="dropZoneUploader">
+                <i data-lucide="image-plus" style="width: 36px; height: 36px; opacity: 0.5; margin-bottom: 8px;"></i>
+                <h4 style="font-size: 14px; margin-bottom: 4px;">Drag &amp; drop product photos here</h4>
+                <p style="font-size: 12px; color: #6b7280;">or click to browse files from your computer (JPG, PNG, WEBP, max 5MB)</p>
+                <input type="file" id="directDropInput" accept="image/*" multiple>
+              </div>
+
+              <!-- Manual URL addition row -->
+              <div style="display: flex; gap: 8px; margin-top: 14px;">
+                <input type="text" id="manualImgUrlInput" class="form-control" placeholder="Or paste public Image URL / Unsplash ID..." style="font-size: 13px;">
+                <button type="button" class="btn btn--dark btn--sm" id="addManualImgBtn">Add URL</button>
+              </div>
+
+              <!-- Image previews grid -->
+              <div class="images-sort-grid" id="imagesGrid">
+                <!-- Injected dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Product Variants Card -->
+          <div class="admin-card" style="margin-bottom: 0;">
+            <div class="admin-card__header">
+              <div>
+                <h3 class="admin-card__title">Variants (Weights, Sizes, Colors)</h3>
+                <p style="font-size: 12px; color: #6b7280; margin-top: 2px;">Optional attributes customers select before adding to cart.</p>
+              </div>
+              <button type="button" class="btn btn--outline btn--xs" id="addVariantRowBtn" style="display: inline-flex; align-items: center; gap: 5px;">
+                <i data-lucide="plus" style="width: 13px; height: 13px;"></i> Add Variant
+              </button>
+            </div>
+            <div class="admin-card__body">
+              <div id="variantsContainer">
+                <!-- Variant Rows -->
+              </div>
+
+              <div style="margin-top: 12px; display: flex; gap: 8px;">
+                <button type="button" class="btn btn--outline btn--xs" id="presetWeightBtn" style="display: inline-flex; align-items: center; gap: 5px;">
+                  <i data-lucide="scale" style="width: 13px; height: 13px;"></i> + Add Bat Weights
+                </button>
+                <button type="button" class="btn btn--outline btn--xs" id="presetSizeBtn" style="display: inline-flex; align-items: center; gap: 5px;">
+                  <i data-lucide="footprints" style="width: 13px; height: 13px;"></i> + Add Shoe Sizes
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Sidebar Column (1fr) -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          
+          <!-- Pricing Card -->
+          <div class="admin-card" style="margin-bottom: 0;">
+            <div class="admin-card__header">
+              <h3 class="admin-card__title">Pricing</h3>
+            </div>
+            <div class="admin-card__body">
+              <div class="form-group">
+                <label for="prodPrice" class="form-label">Regular Price (Rs.) <span class="req">*</span></label>
+                <input type="number" id="prodPrice" class="form-control" placeholder="3500" required min="0" step="50">
+              </div>
+
+              <div class="form-group">
+                <label for="prodComparePrice" class="form-label">Compare-at Price (Rs.)</label>
+                <input type="number" id="prodComparePrice" class="form-control" placeholder="4200" min="0" step="50">
+                <div class="form-hint" id="calcDiscountHint" style="font-weight: 600; color: #059669; display: none;"></div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="prodTag" class="form-label">Promotional Tag / Badge</label>
+                <input type="text" id="prodTag" class="form-control" placeholder="e.g. -17%, Hot, New, Top Seller">
+                <div class="form-hint">Displayed on product card thumbnail in store.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Inventory Card -->
+          <div class="admin-card" style="margin-bottom: 0;">
+            <div class="admin-card__header">
+              <h3 class="admin-card__title">Inventory</h3>
+            </div>
+            <div class="admin-card__body">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="prodStock" class="form-label">Total Stock Quantity <span class="req">*</span></label>
+                <input type="number" id="prodStock" class="form-control" placeholder="25" required min="0">
+                <div class="form-hint">Red alerts trigger when stock is 5 or below.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category Organization Card -->
+          <div class="admin-card" style="margin-bottom: 0;">
+            <div class="admin-card__header">
+              <h3 class="admin-card__title">Organization &amp; Category</h3>
+            </div>
+            <div class="admin-card__body">
+              <!-- Leaf Category Select -->
+              <div class="form-group">
+                <label for="prodCollection" class="form-label">Category <span class="req">*</span></label>
+                <select id="prodCollection" class="form-control" required>
+                  <option value="">-- Select Leaf Category --</option>
+                </select>
+                <div class="form-hint" style="color: #b45309; display: flex; align-items: center; gap: 5px;">
+                  <i data-lucide="info" style="width: 14px; height: 14px;"></i> Products can only be placed into leaf categories (categories with no subcategories).
+                </div>
+              </div>
+
+              <!-- Active Status -->
+              <div class="form-group" style="margin-top: 16px;">
+                <label class="form-check">
+                  <input type="checkbox" id="prodIsActive" checked>
+                  <span style="font-weight: 600; color: var(--heading);">Active &amp; Visible in Store</span>
+                </label>
+              </div>
+
+              <!-- Featured Toggle -->
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-check">
+                  <input type="checkbox" id="prodIsFeatured">
+                  <span style="font-weight: 600; color: var(--heading);">Feature on Home Page</span>
+                </label>
+                <div class="form-hint" style="margin-left: 24px;">Shown on home page featured bestsellers grid.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="js/admin-common.js"></script>
+  <script src="js/product-edit.js"></script>
+
+</body>
+</html>

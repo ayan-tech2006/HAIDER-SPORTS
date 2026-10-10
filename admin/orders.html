@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Orders Management - Haider Sports Admin</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Admin Styles -->
+  <link rel="stylesheet" href="css/admin.css">
+
+  <style>
+    /* Status Tabs Navigation */
+    .status-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(228, 228, 231, 0.6);
+      scrollbar-width: none;
+    }
+    .status-tabs::-webkit-scrollbar { display: none; }
+    .status-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #71717a;
+      background: #ffffff;
+      border: 1px solid rgba(228, 228, 231, 0.7);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .status-tab-btn:hover {
+      color: #18181b;
+      background: #f4f4f5;
+    }
+    .status-tab-btn.active {
+      color: #ffffff;
+      background: #18181b;
+      border-color: #18181b;
+      font-weight: 600;
+      box-shadow: 0 4px 12px -2px rgba(24, 24, 27, 0.25);
+    }
+    .status-tab-count {
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 9999px;
+      background: #f4f4f5;
+      color: #52525b;
+    }
+    .status-tab-btn.active .status-tab-count {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* Live order toast indicator */
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #059669;
+      background: #ecfdf5;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      border: 1px solid #a7f3d0;
+    }
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      animation: pulseDot 1.8s infinite;
+    }
+    @keyframes pulseDot {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Admin Shell Layout -->
+  <div id="adminLayout">
+
+    <!-- Top Action Bar -->
+    <div class="admin-header-row">
+      <div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <h2 style="font-size: 26px; font-weight: 800; color: #18181b;">Customer Orders</h2>
+          <span class="live-indicator">
+            <span class="live-dot"></span> Live Sync
+          </span>
+        </div>
+        <p style="font-size: 13.5px; color: #71717a; margin-top: 3px;">Manage fulfillment, track shipments, and generate invoices.</p>
+      </div>
+
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button type="button" class="btn btn--outline btn--sm" id="exportCsvBtn">
+          <i data-lucide="file-spreadsheet"></i> Export CSV
+        </button>
+        <button type="button" class="btn btn--primary btn--sm" id="refreshOrdersBtn">
+          <i data-lucide="rotate-cw"></i> Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Status Tabs -->
+    <div class="status-tabs" id="statusTabsNav">
+      <button class="status-tab-btn active" data-status="all">
+        All Orders <span class="status-tab-count" id="countAll">0</span>
+      </button>
+      <button class="status-tab-btn" data-status="pending">
+        Pending <span class="status-tab-count" id="countPending">0</span>
+      </button>
+      <button class="status-tab-btn" data-status="confirmed">
+        Confirmed <span class="status-tab-count" id="countConfirmed">0</span>
+      </button>
+      <button class="status-tab-btn" data-status="shipped">
+        Shipped <span class="status-tab-count" id="countShipped">0</span>
+      </button>
+      <button class="status-tab-btn" data-status="delivered">
+        Delivered <span class="status-tab-count" id="countDelivered">0</span>
+      </button>
+      <button class="status-tab-btn" data-status="cancelled">
+        Cancelled <span class="status-tab-count" id="countCancelled">0</span>
+      </button>
+      <button class="status-tab-btn" data-status="returned">
+        Returned <span class="status-tab-count" id="countReturned">0</span>
+      </button>
+    </div>
+
+    <!-- Filter Card -->
+    <div class="admin-card" style="margin-bottom: 20px;">
+      <div class="admin-card__body" style="padding: 16px;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 14px;">
+          <!-- Search box -->
+          <div>
+            <label class="form-label" style="font-size: 12px;">Search Orders</label>
+            <div style="position: relative;">
+              <i data-lucide="search" style="position: absolute; left: 14px; top: 12px; color: #94a3b8; width: 16px; height: 16px;"></i>
+              <input type="text" id="orderSearchInput" class="form-control form-control--sm" placeholder="Search by Order #, Customer Name, or Phone..." style="padding-left: 38px;">
+            </div>
+          </div>
+
+          <!-- City Filter -->
+          <div>
+            <label class="form-label" style="font-size: 12px;">City</label>
+            <select id="cityFilter" class="form-control form-control--sm">
+              <option value="all">All Cities</option>
+            </select>
+          </div>
+
+          <!-- Date Filter -->
+          <div>
+            <label class="form-label" style="font-size: 12px;">Date Range</label>
+            <select id="dateFilter" class="form-control form-control--sm">
+              <option value="all">All Time</option>
+              <option value="today">Today</option>
+              <option value="7d">Last 7 Days</option>
+              <option value="30d">Last 30 Days</option>
+              <option value="month">This Month</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Data Card -->
+    <div class="admin-card">
+      <div class="admin-card__body" style="padding: 0;">
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="ordersTable">
+            <thead>
+              <tr>
+                <th>Order #</th>
+                <th>Date &amp; Time</th>
+                <th>Customer</th>
+                <th>City</th>
+                <th>Items</th>
+                <th>Total</th>
+                <th>Payment</th>
+                <th>Status</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+              <!-- Rendered via orders.js -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Bar -->
+        <div class="table-pagination" id="ordersPagination">
+          <div class="pagination-info" id="paginationInfo">Showing 0 orders</div>
+          <div class="pagination-btns" id="paginationButtons"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Audio Chime for New Orders -->
+  <audio id="orderChime" preload="auto">
+    <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="js/admin-common.js"></script>
+  <script src="js/orders.js"></script>
+
+</body>
+</html>

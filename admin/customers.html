@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Customer Directory - Haider Sports Admin</title>
+
+  <!-- Google Fonts & Lucide Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Admin Styles -->
+  <link rel="stylesheet" href="css/admin.css">
+
+  <style>
+    /* Stats Grid */
+    .cust-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .cust-stat-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .cust-stat-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Slide-over Side Drawer */
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.25s ease;
+    }
+    .drawer-backdrop.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .drawer-panel {
+      position: fixed;
+      top: 0;
+      right: -480px;
+      width: 480px;
+      max-width: 90vw;
+      height: 100vh;
+      background: #fff;
+      z-index: 1000;
+      box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .drawer-panel.active {
+      right: 0;
+    }
+    .drawer-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .drawer-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Admin Shell Layout -->
+  <div id="adminLayout">
+
+    <!-- Top Action Bar -->
+    <div class="admin-header-row">
+      <div>
+        <h2 style="font-size: 22px; font-weight: 800; color: var(--heading);">Customer Directory</h2>
+        <p style="font-size: 13px; color: #64748b; margin-top: 2px;">Aggregated buyer profiles, order frequency, COD reliability, and purchase history.</p>
+      </div>
+
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button type="button" class="btn btn--outline btn--sm" id="exportCustCsvBtn" style="display: inline-flex; align-items: center; gap: 6px;">
+          <i data-lucide="download" style="width: 14px; height: 14px;"></i> Export CSV
+        </button>
+        <button type="button" class="btn btn--dark btn--sm" id="refreshCustBtn" style="display: inline-flex; align-items: center; gap: 6px;">
+          <i data-lucide="rotate-cw" style="width: 14px; height: 14px;"></i> Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Stats Grid -->
+    <div class="cust-stat-grid">
+      <div class="cust-stat-card">
+        <div class="cust-stat-icon" style="background: rgba(241, 90, 36, 0.1); color: var(--primary);">
+          <i data-lucide="users" style="width: 22px; height: 22px;"></i>
+        </div>
+        <div>
+          <div style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase;">Total Customers</div>
+          <div style="font-size: 22px; font-weight: 800; color: var(--heading);" id="statTotalCust">0</div>
+        </div>
+      </div>
+
+      <div class="cust-stat-card">
+        <div class="cust-stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+          <i data-lucide="repeat" style="width: 22px; height: 22px;"></i>
+        </div>
+        <div>
+          <div style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase;">Repeat Buyers (3+)</div>
+          <div style="font-size: 22px; font-weight: 800; color: var(--heading);" id="statRepeatCust">0</div>
+        </div>
+      </div>
+
+      <div class="cust-stat-card">
+        <div class="cust-stat-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;">
+          <i data-lucide="shield-alert" style="width: 22px; height: 22px;"></i>
+        </div>
+        <div>
+          <div style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase;">Risky COD (2+ Returns)</div>
+          <div style="font-size: 22px; font-weight: 800; color: var(--heading);" id="statRiskyCust">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter & Sort Card -->
+    <div class="admin-card" style="margin-bottom: 20px;">
+      <div class="admin-card__body" style="padding: 16px;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 14px;">
+          <!-- Search box -->
+          <div>
+            <label class="form-label" style="font-size: 12px;">Search Customers</label>
+            <div style="position: relative;">
+              <i data-lucide="search" style="position: absolute; left: 12px; top: 11px; color: #94a3b8; width: 15px; height: 15px;"></i>
+              <input type="text" id="custSearchInput" class="form-control form-control--sm" placeholder="Search by Name, Phone, or City..." style="padding-left: 36px;">
+            </div>
+          </div>
+
+          <!-- Sort dropdown -->
+          <div>
+            <label class="form-label" style="font-size: 12px;">Sort By</label>
+            <select id="custSortSelect" class="form-control form-control--sm">
+              <option value="spent_desc">Highest Total Spent</option>
+              <option value="orders_desc">Most Orders Placed</option>
+              <option value="latest_order">Most Recent Order</option>
+              <option value="name_asc">Name (A - Z)</option>
+            </select>
+          </div>
+
+          <!-- Filter Tag -->
+          <div>
+            <label class="form-label" style="font-size: 12px;">Customer Type</label>
+            <select id="custTypeFilter" class="form-control form-control--sm">
+              <option value="all">All Buyers</option>
+              <option value="vip">Repeat Buyers (3+ orders)</option>
+              <option value="risky">Risky COD (Returns/Cancelled)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customers Data Table -->
+    <div class="admin-card">
+      <div class="admin-card__body" style="padding: 0;">
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="customersTable">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Primary City</th>
+                <th style="text-align: center;">Total Orders</th>
+                <th>Status / Tag</th>
+                <th style="text-align: right;">Total Spent</th>
+                <th>Last Order</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="customersTableBody">
+              <!-- Rendered via customers.js -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Bar -->
+        <div class="table-pagination">
+          <div class="pagination-info" id="custPaginationInfo">Showing 0 customers</div>
+          <div class="pagination-btns" id="custPaginationBtns"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Customer Drawer Backdrop -->
+  <div class="drawer-backdrop" id="custDrawerBackdrop"></div>
+
+  <!-- Customer Side Drawer Panel -->
+  <div class="drawer-panel" id="custDrawerPanel">
+    <div class="drawer-header">
+      <div>
+        <h3 style="font-size: 18px; font-weight: 800; color: var(--heading);" id="drawerCustName">Customer Details</h3>
+        <div style="font-size: 12px; color: #64748b;" id="drawerCustPhone">0300...</div>
+      </div>
+      <button type="button" class="btn btn--outline btn--xs" id="closeCustDrawerBtn">
+        <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+      </button>
+    </div>
+
+    <div class="drawer-body">
+      <!-- Quick Actions -->
+      <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+        <a href="#" id="drawerCallBtn" class="btn btn--outline btn--sm" style="flex: 1; justify-content: center; display: inline-flex; align-items: center; gap: 6px;">
+          <i data-lucide="phone" style="width: 14px; height: 14px;"></i> Call
+        </a>
+        <a href="#" id="drawerWhatsAppBtn" target="_blank" class="btn btn--sm" style="flex: 1; justify-content: center; background: #25d366; color: #fff; border: none; display: inline-flex; align-items: center; gap: 6px;">
+          <i data-lucide="message-circle" style="width: 14px; height: 14px;"></i> WhatsApp
+        </a>
+      </div>
+
+      <!-- Warning / VIP alert banner if applicable -->
+      <div id="drawerAlertBanner" style="margin-bottom: 16px;"></div>
+
+      <!-- Lifetime Stats Cards -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px;">
+        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 12px;">
+          <div style="font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase;">Total Spent</div>
+          <div style="font-size: 18px; font-weight: 800; color: var(--heading); margin-top: 2px;" id="drawerTotalSpent">Rs. 0</div>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 12px;">
+          <div style="font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase;">Total Orders</div>
+          <div style="font-size: 18px; font-weight: 800; color: var(--heading); margin-top: 2px;" id="drawerTotalOrders">0</div>
+        </div>
+      </div>
+
+      <!-- Shipping Profile -->
+      <div style="margin-bottom: 24px;">
+        <h4 style="font-size: 13px; font-weight: 700; color: var(--heading); text-transform: uppercase; margin-bottom: 8px;">Delivery Details</h4>
+        <div style="font-size: 13.5px; color: #334155; line-height: 1.5;" id="drawerAddress">-</div>
+      </div>
+
+      <!-- Order History List -->
+      <div>
+        <h4 style="font-size: 13px; font-weight: 700; color: var(--heading); text-transform: uppercase; margin-bottom: 12px;">Order History</h4>
+        <div id="drawerOrdersList" style="display: flex; flex-direction: column; gap: 10px;">
+          <!-- Injected via customers.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="js/admin-common.js"></script>
+  <script src="js/customers.js"></script>
+
+</body>
+</html>

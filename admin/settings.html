@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Store Settings - Haider Sports Admin</title>
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Admin Styles -->
+  <link rel="stylesheet" href="css/admin.css">
+
+  <style>
+    /* Settings section cards */
+    .settings-nav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--border);
+    }
+    .settings-tab-btn {
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #64748b;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+    .settings-tab-btn:hover {
+      color: var(--heading);
+    }
+    .settings-tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* City rate rows */
+    .city-rate-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 40px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Admin Shell Layout -->
+  <div id="adminLayout">
+    <form id="settingsForm">
+
+      <!-- Top Action Bar -->
+      <div class="admin-header-row">
+        <div>
+          <h2 style="font-size: 22px; font-weight: 800; color: var(--heading);">Store Settings &amp; Configuration</h2>
+          <p style="font-size: 13px; color: #64748b; margin-top: 2px;">Manage contact details, delivery charges, payment options, and admin credentials.</p>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <button type="submit" class="btn btn--primary btn--sm" id="saveSettingsBtn">
+            <i data-lucide="save" style="width: 14px; height: 14px;"></i> Save Settings
+          </button>
+        </div>
+      </div>
+
+      <!-- Settings Nav Tabs -->
+      <div class="settings-nav">
+        <button type="button" class="settings-tab-btn active" data-tab="tabStoreInfo">
+          <i data-lucide="store" style="width: 16px; height: 16px;"></i> Store Information
+        </button>
+        <button type="button" class="settings-tab-btn" data-tab="tabDelivery">
+          <i data-lucide="truck" style="width: 16px; height: 16px;"></i> Shipping &amp; Delivery
+        </button>
+        <button type="button" class="settings-tab-btn" data-tab="tabPayments">
+          <i data-lucide="credit-card" style="width: 16px; height: 16px;"></i> Payment Methods
+        </button>
+        <button type="button" class="settings-tab-btn" data-tab="tabSecurity">
+          <i data-lucide="shield" style="width: 16px; height: 16px;"></i> Admin Account Security
+        </button>
+      </div>
+
+      <!-- TAB 1: STORE INFORMATION -->
+      <div id="tabStoreInfo" class="tab-pane">
+        <div class="admin-card">
+          <div class="admin-card__header">
+            <h3 class="admin-card__title">Store Profile &amp; Contact Details</h3>
+          </div>
+          <div class="admin-card__body">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              <div class="form-group">
+                <label for="setStoreName" class="form-label">Store Brand Name <span class="req">*</span></label>
+                <input type="text" id="setStoreName" class="form-control" placeholder="Haider Sports" required>
+              </div>
+
+              <div class="form-group">
+                <label for="setEmail" class="form-label">Customer Support Email <span class="req">*</span></label>
+                <input type="email" id="setEmail" class="form-control" placeholder="support@haidersports.pk" required>
+              </div>
+
+              <div class="form-group">
+                <label for="setPhone" class="form-label">Helpline Phone Number <span class="req">*</span></label>
+                <input type="text" id="setPhone" class="form-control" placeholder="+92 300 1234567" required>
+              </div>
+
+              <div class="form-group">
+                <label for="setWhatsapp" class="form-label">WhatsApp Helpline Number <span class="req">*</span></label>
+                <input type="text" id="setWhatsapp" class="form-control" placeholder="+92 300 1234567" required>
+                <div class="form-hint">Used for all "Order on WhatsApp" and floating buttons across the store.</div>
+              </div>
+
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label for="setAddress" class="form-label">Warehouse &amp; Physical Store Address <span class="req">*</span></label>
+                <textarea id="setAddress" class="form-control" rows="2" placeholder="Kashmir Road, Model Town, Sialkot, Punjab, Pakistan" required></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="setHours" class="form-label">Customer Support Hours</label>
+                <input type="text" id="setHours" class="form-control" placeholder="Mon - Sat: 10:00 AM - 10:00 PM">
+              </div>
+
+              <div class="form-group">
+                <label for="setFacebook" class="form-label"><i data-lucide="facebook" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"></i> Facebook Page URL</label>
+                <input type="text" id="setFacebook" class="form-control" placeholder="https://facebook.com/rashycricket">
+              </div>
+
+              <div class="form-group">
+                <label for="setInstagram" class="form-label"><i data-lucide="instagram" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"></i> Instagram Handle / URL</label>
+                <input type="text" id="setInstagram" class="form-control" placeholder="https://instagram.com/haidersports">
+              </div>
+
+              <div class="form-group">
+                <label for="setTiktok" class="form-label"><i data-lucide="video" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"></i> TikTok Profile URL</label>
+                <input type="text" id="setTiktok" class="form-control" placeholder="https://tiktok.com/@rashycricket">
+              </div>
+
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label for="setYoutube" class="form-label"><i data-lucide="youtube" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"></i> YouTube Channel</label>
+                <input type="text" id="setYoutube" class="form-control" placeholder="https://youtube.com/@rashycricket">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: SHIPPING & DELIVERY -->
+      <div id="tabDelivery" class="tab-pane" style="display: none;">
+        <div class="admin-card">
+          <div class="admin-card__header">
+            <h3 class="admin-card__title">Nationwide Delivery Rules</h3>
+          </div>
+          <div class="admin-card__body">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              <div class="form-group">
+                <label for="setFlatRate" class="form-label">Standard Delivery Charge (Rs.) <span class="req">*</span></label>
+                <input type="number" id="setFlatRate" class="form-control" placeholder="250" min="0" step="10" required>
+                <div class="form-hint">Default shipping fee applied to all orders across Pakistan.</div>
+              </div>
+
+              <div class="form-group">
+                <label for="setFreeAbove" class="form-label">Free Delivery Threshold (Rs.)</label>
+                <input type="number" id="setFreeAbove" class="form-control" placeholder="5000" min="0" step="500">
+                <div class="form-hint">Orders above this subtotal get free shipping (0 Rs.). Enter 0 to disable.</div>
+              </div>
+            </div>
+
+            <!-- Custom City Rates Table -->
+            <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div>
+                  <h4 style="font-size: 14px; font-weight: 700; color: var(--heading);">Per-City Shipping Rates (Optional)</h4>
+                  <p style="font-size: 12px; color: #64748b;">Override standard shipping fees for specific cities (e.g. Sialkot local delivery).</p>
+                </div>
+                <button type="button" class="btn btn--outline btn--xs" id="addCityRateBtn">
+                  <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Add City Rate
+                </button>
+              </div>
+
+              <div id="cityRatesContainer">
+                <!-- Dynamically injected rows -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: PAYMENT METHODS -->
+      <div id="tabPayments" class="tab-pane" style="display: none;">
+        <div class="admin-card">
+          <div class="admin-card__header">
+            <h3 class="admin-card__title">Checkout Payment Gateways</h3>
+          </div>
+          <div class="admin-card__body">
+            <!-- COD Toggle -->
+            <div style="padding: 16px; border: 1.5px solid var(--border); border-radius: 8px; margin-bottom: 20px; background: #fff;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h4 style="font-size: 15px; font-weight: 700; color: var(--heading); margin-bottom: 2px;">Cash on Delivery (COD)</h4>
+                  <p style="font-size: 12.5px; color: #64748b;">Allow customers to pay cash directly to the courier upon parcel delivery.</p>
+                </div>
+                <label class="form-check" style="margin: 0;">
+                  <input type="checkbox" id="setCodEnabled" checked>
+                  <span style="font-weight: 700; color: #059669;">Enabled</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Bank Transfer Details -->
+            <div style="padding: 16px; border: 1.5px solid var(--border); border-radius: 8px; background: #fff;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div>
+                  <h4 style="font-size: 15px; font-weight: 700; color: var(--heading); margin-bottom: 2px;">Direct Bank Transfer / EasyPaisa / JazzCash</h4>
+                  <p style="font-size: 12.5px; color: #64748b;">Display account details at checkout for manual deposit &amp; receipt verification.</p>
+                </div>
+                <label class="form-check" style="margin: 0;">
+                  <input type="checkbox" id="setBankEnabled" checked>
+                  <span style="font-weight: 700; color: #059669;">Enabled</span>
+                </label>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="form-group">
+                  <label for="setBankName" class="form-label">Bank Name</label>
+                  <input type="text" id="setBankName" class="form-control" placeholder="Meezan Bank / HBL">
+                </div>
+
+                <div class="form-group">
+                  <label for="setAccountTitle" class="form-label">Account Title</label>
+                  <input type="text" id="setAccountTitle" class="form-control" placeholder="Haider Sports">
+                </div>
+
+                <div class="form-group">
+                  <label for="setAccountNumber" class="form-label">Account Number</label>
+                  <input type="text" id="setAccountNumber" class="form-control" placeholder="01010101010101">
+                </div>
+
+                <div class="form-group">
+                  <label for="setIban" class="form-label">IBAN</label>
+                  <input type="text" id="setIban" class="form-control" placeholder="PK00MEZN0000000000000000">
+                </div>
+
+                <div class="form-group">
+                  <label for="setJazzCash" class="form-label">JazzCash Account</label>
+                  <input type="text" id="setJazzCash" class="form-control" placeholder="0300 1234567 (Haider Sports)">
+                </div>
+
+                <div class="form-group">
+                  <label for="setEasyPaisa" class="form-label">EasyPaisa Account</label>
+                  <input type="text" id="setEasyPaisa" class="form-control" placeholder="0300 1234567 (Haider Sports)">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: ADMIN SECURITY -->
+      <div id="tabSecurity" class="tab-pane" style="display: none;">
+        <div class="admin-card">
+          <div class="admin-card__header">
+            <h3 class="admin-card__title">Admin Password Update</h3>
+          </div>
+          <div class="admin-card__body">
+            <div style="max-width: 440px;">
+              <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">
+                Change your Supabase administrator password. You will need to use the new password on your next login.
+              </p>
+
+              <div class="form-group">
+                <label for="newAdminPassword" class="form-label">New Password</label>
+                <input type="password" id="newAdminPassword" class="form-control" placeholder="Minimum 8 characters" minlength="8">
+              </div>
+
+              <div class="form-group">
+                <label for="confirmAdminPassword" class="form-label">Confirm New Password</label>
+                <input type="password" id="confirmAdminPassword" class="form-control" placeholder="Re-enter new password">
+              </div>
+
+              <button type="button" class="btn btn--dark btn--sm" id="changePasswordBtn">
+                <i data-lucide="key" style="width: 14px; height: 14px;"></i> Update Admin Password
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="js/admin-common.js"></script>
+  <script src="js/settings.js"></script>
+
+</body>
+</html>

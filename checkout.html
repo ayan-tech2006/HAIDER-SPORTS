@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - Haider Sports</title>
+  <meta name="description" content="Quick guest checkout with Cash on Delivery across Pakistan. No account required.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/icons.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo"><span class="logo__icon"><i class="fa-solid fa-baseball-bat-ball"></i></span>HAIDERSPORTS</a>
+
+      <nav class="nav" id="nav">
+        <a href="index.html" class="nav__link">Home</a>
+        <a href="shop.html" class="nav__link">Shop</a>
+        <a href="shop.html#/cricket" class="nav__link">Cricket Gear</a>
+        <a href="shop.html#/footwear" class="nav__link">Footwear</a>
+        <a href="about.html" class="nav__link">About</a>
+        <a href="contact.html" class="nav__link">Contact</a>
+      </nav>
+
+      <div class="header__icons">
+        <a href="#" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></a>
+        <a href="#" aria-label="Account"><i class="fa-regular fa-user"></i></a>
+        <a href="wishlist.html" aria-label="Wishlist" class="badge-wrap"><i class="fa-regular fa-heart"></i><span class="badge" id="wishCount">0</span></a>
+        <a href="cart.html" aria-label="Cart" class="badge-wrap"><i class="fa-solid fa-bag-shopping"></i><span class="badge" id="cartCount">0</span></a>
+        <button class="menu-btn" id="menuBtn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= PAGE BANNER ================= -->
+  <section class="page-banner" id="pageBanner">
+    <div class="container">
+      <h1 id="pageTitle">Guest Checkout</h1>
+      <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <a href="shop.html">Shop</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <a href="cart.html">Cart</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span>Checkout</span>
+      </nav>
+    </div>
+  </section>
+
+  <!-- ================= CHECKOUT CONTENT ================= -->
+  <main class="section checkout-page" id="checkoutContainer">
+    <div class="container">
+      <form id="checkoutForm" novalidate>
+        <div class="checkout__layout">
+
+          <!-- Left: Customer Form & Payment -->
+          <div class="checkout-main">
+
+            <!-- Remembered customer notice -->
+            <div class="customer-remember-notice" id="rememberNotice" style="display:none;">
+              <span><i class="fa-solid fa-user-check" style="color: var(--primary); margin-right: 6px;"></i> Welcome back, <strong id="rememberName">Customer</strong>! Pre-filled your previous details.</span>
+              <a href="#" id="clearCustomerBtn">Not you? Clear</a>
+            </div>
+
+            <!-- Customer & Shipping Box -->
+            <div class="checkout-box">
+              <h3><i class="fa-solid fa-truck"></i> Shipping &amp; Delivery Details</h3>
+
+              <!-- Full Name -->
+              <div class="form-group" id="groupName">
+                <label for="custName">Full Name <span class="req">*</span></label>
+                <input type="text" id="custName" class="form-control" placeholder="e.g. Muhammad Ali" autocomplete="name" required>
+                <div class="form-error">Please enter your full name (minimum 3 letters).</div>
+              </div>
+
+              <!-- Phone & WhatsApp Row -->
+              <div class="form-row">
+                <div class="form-group" id="groupPhone">
+                  <label for="custPhone">Mobile Phone (Pakistani) <span class="req">*</span></label>
+                  <input type="tel" id="custPhone" class="form-control" placeholder="03XXXXXXXXX" autocomplete="tel" required>
+                  <div class="form-error">Please enter a valid Pakistani phone (e.g. 03001234567).</div>
+                </div>
+
+                <div class="form-group" id="groupWhatsapp">
+                  <label for="custWhatsapp">WhatsApp Number</label>
+                  <input type="tel" id="custWhatsapp" class="form-control" placeholder="03XXXXXXXXX">
+                  <label class="checkbox-wrap">
+                    <input type="checkbox" id="sameWhatsapp" checked> Same as mobile phone
+                  </label>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="form-group" id="groupEmail">
+                <label for="custEmail">Email Address (Optional)</label>
+                <input type="email" id="custEmail" class="form-control" placeholder="your.email@example.com" autocomplete="email">
+                <div class="form-error">Please enter a valid email address.</div>
+              </div>
+
+              <!-- City & Other City Row -->
+              <div class="form-row">
+                <div class="form-group" id="groupCity">
+                  <label for="custCity">Delivery City <span class="req">*</span></label>
+                  <select id="custCity" class="form-control" required>
+                    <option value="" disabled selected>Select your city...</option>
+                    <option value="Lahore">Lahore (Rs. 200)</option>
+                    <option value="Karachi">Karachi (Rs. 200)</option>
+                    <option value="Islamabad">Islamabad (Rs. 200)</option>
+                    <option value="Rawalpindi">Rawalpindi (Rs. 200)</option>
+                    <option value="Sialkot">Sialkot (Rs. 150)</option>
+                    <option value="Faisalabad">Faisalabad (Rs. 220)</option>
+                    <option value="Multan">Multan (Rs. 230)</option>
+                    <option value="Peshawar">Peshawar (Rs. 250)</option>
+                    <option value="Quetta">Quetta (Rs. 280)</option>
+                    <option value="Other">Other City (Rs. 250)</option>
+                  </select>
+                  <div class="form-error">Please select your delivery city.</div>
+                </div>
+
+                <div class="form-group" id="groupOtherCity" style="display:none;">
+                  <label for="custOtherCity">Specify City Name <span class="req">*</span></label>
+                  <input type="text" id="custOtherCity" class="form-control" placeholder="e.g. Gujranwala, Bahawalpur">
+                  <div class="form-error">Please specify your city.</div>
+                </div>
+              </div>
+
+              <!-- Full Address -->
+              <div class="form-group" id="groupAddress">
+                <label for="custAddress">Complete Street Address <span class="req">*</span></label>
+                <textarea id="custAddress" class="form-control" rows="2" placeholder="House/Flat No, Street, Mohallah / Block, Sector / Area" required></textarea>
+                <div class="form-error">Please enter your complete address for courier delivery.</div>
+              </div>
+
+              <!-- Landmark & Notes Row -->
+              <div class="form-row">
+                <div class="form-group" id="groupLandmark">
+                  <label for="custLandmark">Nearest Famous Landmark (Optional)</label>
+                  <input type="text" id="custLandmark" class="form-control" placeholder="e.g. Near PSO Pump, Beside Masjid">
+                </div>
+
+                <div class="form-group" id="groupNotes">
+                  <label for="custNotes">Order Notes / Delivery Instructions (Optional)</label>
+                  <input type="text" id="custNotes" class="form-control" placeholder="e.g. Call before delivery, handle bat with care">
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Method Box -->
+            <div class="checkout-box">
+              <h3><i class="fa-solid fa-wallet"></i> Payment Method</h3>
+
+              <div class="payment-methods">
+                <!-- COD (Default) -->
+                <div class="payment-card selected" id="cardCod">
+                  <label class="payment-card__header">
+                    <input type="radio" name="paymentMethod" value="cod" checked>
+                    <div>
+                      <span class="payment-card__title"><i class="fa-solid fa-money-bill-wave" style="color: #168a3e;"></i> Cash on Delivery (COD)</span>
+                      <div class="payment-card__desc">Pay in cash to the TCS / Leopard courier rider when your parcel arrives.</div>
+                    </div>
+                  </label>
+                </div>
+
+                <!-- Bank / JazzCash / EasyPaisa -->
+                <div class="payment-card" id="cardBank">
+                  <label class="payment-card__header">
+                    <input type="radio" name="paymentMethod" value="bank">
+                    <div>
+                      <span class="payment-card__title"><i class="fa-solid fa-building-columns" style="color: var(--primary);"></i> Bank Transfer / JazzCash / EasyPaisa</span>
+                      <div class="payment-card__desc">Direct electronic transfer before shipment. Dispatch after screenshot verification.</div>
+                    </div>
+                  </label>
+
+                  <div class="payment-card__details">
+                    <div class="bank-info-box">
+                      <div><strong>Bank:</strong> Meezan Bank Ltd (Cantt Sialkot Branch)</div>
+                      <div><strong>Account Title:</strong> Haider Sports Pakistan</div>
+                      <div><strong>Account No:</strong> 02010108923451</div>
+                      <div><strong>IBAN:</strong> PK45MEZN0002010108923451</div>
+                      <div style="margin-top: 8px;"><strong>JazzCash / EasyPaisa:</strong> 03001234567 (Haider Sports)</div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                      <label for="transId">Transaction ID / Reference Number (Optional)</label>
+                      <input type="text" id="transId" class="form-control" placeholder="e.g. TRX-9823419 or sender account name">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right: Sticky Order Summary & Submit -->
+          <aside class="checkout-summary">
+            <h3>Order Summary</h3>
+
+            <!-- Item List -->
+            <div class="checkout-items-list" id="checkoutItemsList">
+              <!-- Rendered by js/checkout.js -->
+            </div>
+
+            <!-- Coupon Input Box -->
+            <div class="checkout-coupon-box" style="margin: 16px 0; padding: 14px; background: #fdfdfd; border: 1.5px dashed var(--border); border-radius: 8px;">
+              <div style="font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--dark);">
+                <i class="fa-solid fa-tag" style="color: var(--primary);"></i> Have a coupon code?
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="checkoutCouponInput" class="form-control" placeholder="e.g. WELCOME10" style="text-transform: uppercase; font-size: 13px; padding: 8px 12px; height: 38px;">
+                <button type="button" id="applyCheckoutCouponBtn" class="btn btn--dark" style="padding: 0 16px; font-size: 13px; height: 38px; white-space: nowrap;">Apply</button>
+              </div>
+              <div id="checkoutCouponMsg" style="font-size: 12px; margin-top: 6px; display: none;"></div>
+            </div>
+
+            <!-- Totals -->
+            <div class="checkout-totals">
+              <div class="checkout-totals__row">
+                <span>Subtotal</span>
+                <strong id="summarySubtotal">Rs. 0</strong>
+              </div>
+              <div class="checkout-totals__row">
+                <span>Delivery Charges</span>
+                <strong id="summaryDelivery" style="color: #168a3e;">Rs. 200</strong>
+              </div>
+              <div class="checkout-totals__row" id="freeDeliveryNote" style="font-size: 11px; color: #168a3e; margin-top: -6px; margin-bottom: 8px; display: none;">
+                <i class="fa-solid fa-check"></i> Free shipping applied (Orders above Rs. 5,000)!
+              </div>
+              <div class="checkout-totals__row" id="rowDiscount" style="display: none; color: #168a3e;">
+                <span>Discount (<span id="discountCodeText"></span>)</span>
+                <strong id="summaryDiscount">- Rs. 0</strong>
+              </div>
+              <div class="checkout-totals__row checkout-totals__row--total">
+                <span>Total Amount</span>
+                <strong id="summaryTotal">Rs. 0</strong>
+              </div>
+            </div>
+
+            <!-- Place Order CTA -->
+            <button type="submit" class="btn btn--primary btn--place-order" id="placeOrderBtn">
+              <span id="btnText">Place Order (Cash on Delivery)</span>
+              <i class="fa-solid fa-lock" id="btnIcon"></i>
+            </button>
+
+            <div class="checkout-badge-guarantee">
+              <i class="fa-solid fa-shield-halved"></i>
+              <div>
+                <strong>Safe &amp; Secure Order</strong><br>
+                Inspected before packing · 7-day exchange warranty.
+              </div>
+            </div>
+          </aside>
+
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div class="footer__col">
+        <a href="index.html" class="logo"><span class="logo__icon"><i class="fa-solid fa-baseball-bat-ball"></i></span>HAIDERSPORTS</a>
+        <p>Premium cricket gear and sportswear crafted for performance, durability, and champions across Pakistan.</p>
+        <div class="socials">
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="shop.html#/cricket">Cricket Gear</a></li>
+          <li><a href="shop.html#/footwear">Footwear</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h5>Services</h5>
+        <ul>
+          <li><a href="order-tracking.html">Order Tracking</a></li>
+          <li><a href="wishlist.html">Wishlist</a></li>
+          <li><a href="shipping-policy.html">Shipping Info</a></li>
+          <li><a href="return-policy.html">Returns &amp; Exchange</a></li>
+          <li><a href="privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="terms.html">Terms &amp; Conditions</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h5>Newsletter</h5>
+        <p>Subscribe to get the latest deals on bats, kits and more.</p>
+        <form class="newsletter" id="newsletter">
+          <input type="email" placeholder="Your email address" required>
+          <button type="submit" aria-label="Subscribe"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div class="container footer__bottom-inner">
+        <p>&copy; <span id="year"></span> HAIDERSPORTS. All rights reserved.</p>
+        <div class="payments">
+          <i class="fa-brands fa-cc-visa"></i><i class="fa-brands fa-cc-mastercard"></i><i class="fa-solid fa-money-bill-wave"></i>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/dummy-data.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>

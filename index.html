@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HAIDERSPORTS - Cricket Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <a href="#" class="logo"><span class="logo__icon"><i class="fa-solid fa-baseball-bat-ball"></i></span>HAIDERSPORTS</a>
+
+      <nav class="nav" id="nav">
+        <a href="index.html" class="nav__link active">Home</a>
+        <a href="shop.html" class="nav__link">Shop</a>
+        <a href="shop.html#/cricket" class="nav__link">Cricket Gear</a>
+        <a href="shop.html#/footwear" class="nav__link">Footwear</a>
+        <a href="blog.html" class="nav__link">Blog</a>
+        <a href="about.html" class="nav__link">About</a>
+        <a href="contact.html" class="nav__link">Contact</a>
+      </nav>
+
+      <div class="header__icons">
+        <a href="#" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></a>
+        <a href="#" aria-label="Account"><i class="fa-regular fa-user"></i></a>
+        <a href="wishlist.html" aria-label="Wishlist" class="badge-wrap"><i class="fa-regular fa-heart"></i><span class="badge" id="wishCount">0</span></a>
+        <a href="#" aria-label="Cart" class="badge-wrap"><i class="fa-solid fa-bag-shopping"></i><span class="badge" id="cartCount">0</span></a>
+        <button class="menu-btn" id="menuBtn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="hero__slide active" style="--bg:url('https://images.unsplash.com/photo-1593341646782-e0b495cff86d?w=1800&q=80')">
+      <div class="hero__content">
+        <span class="subtitle">Premium Cricket Gear</span>
+        <h1>Gear Up For The Game</h1>
+        <a href="#shop" class="btn btn--primary">Shop Now <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+    </div>
+    <div class="hero__slide" style="--bg:url('https://images.unsplash.com/photo-1783124759384-127efcd92eab?w=1800&q=80')">
+      <div class="hero__content">
+        <span class="subtitle">Tape Ball &amp; Hardball Bats</span>
+        <h1>Hit It Out Of The Park</h1>
+        <a href="#shop" class="btn btn--primary">Shop Bats <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+    </div>
+    <div class="hero__slide" style="--bg:url('https://images.unsplash.com/photo-1675693303492-9a5bc898bf94?w=1800&q=80')">
+      <div class="hero__content">
+        <span class="subtitle">Complete Hardball Kits</span>
+        <h1>Play Like A Champion</h1>
+        <a href="#shop" class="btn btn--primary">Shop Kits <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+    </div>
+    <div class="hero__dots" id="heroDots">
+      <button class="active" aria-label="Slide 1"></button>
+      <button aria-label="Slide 2"></button>
+      <button aria-label="Slide 3"></button>
+    </div>
+  </section>
+
+  <!-- ================= CATEGORY SLIDER ================= -->
+  <section class="section promo" id="categories">
+    <div class="container">
+      <div class="cat-slider">
+        <button class="cat-slider__arrow cat-slider__arrow--prev" id="catPrev" aria-label="Previous categories"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="cat-slider__track" id="catTrack">
+          <div class="promo__card promo__card--orange">
+            <div class="promo__text">
+              <span class="subtitle subtitle--light">Hot Collection</span>
+              <h3>Tape Ball<br>Bats</h3>
+              <a href="shop.html#/cricket/bats/tape-ball-bats" class="btn btn--dark btn--sm">Shop Now <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <img src="https://images.unsplash.com/photo-1758791184255-411236a49346?w=600&q=80" alt="Tape ball bats">
+          </div>
+          <div class="promo__card promo__card--blue">
+            <div class="promo__text">
+              <span class="subtitle">English &amp; Kashmir Willow</span>
+              <h3>Hardball<br>Bats</h3>
+              <a href="shop.html#/cricket/bats/hardball-bats" class="btn btn--dark btn--sm">Shop Now <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <img src="https://images.unsplash.com/photo-1630851278830-c0c9b12933ee?w=600&q=80" alt="Hardball bats">
+          </div>
+          <div class="promo__card promo__card--dark">
+            <div class="promo__text">
+              <span class="subtitle">Full Protection</span>
+              <h3>Hardball<br>Kits</h3>
+              <a href="shop.html#/cricket/hardball-kits" class="btn btn--primary btn--sm">Shop Now <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <img src="https://images.unsplash.com/photo-1776229705264-6b437229654b?w=600&q=80" alt="Hardball kits">
+          </div>
+          <div class="promo__card promo__card--pink">
+            <div class="promo__text">
+              <span class="subtitle">New Collection</span>
+              <h3>Cricket<br>Shirts</h3>
+              <a href="shop.html#/cricket/clothing/shirts" class="btn btn--dark btn--sm">Shop Now <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <img src="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=600&q=80" alt="Cricket shirts">
+          </div>
+          <div class="promo__card promo__card--green">
+            <div class="promo__text">
+              <span class="subtitle">Comfort Fit</span>
+              <h3>Sports<br>Trousers</h3>
+              <a href="shop.html#/cricket/clothing/trousers" class="btn btn--dark btn--sm">Shop Now <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <img src="https://images.unsplash.com/photo-1715532098035-a343b26eaeaa?w=600&q=80" alt="Sports trousers">
+          </div>
+          <div class="promo__card promo__card--yellow">
+            <div class="promo__text">
+              <span class="subtitle">Ready To Play</span>
+              <h3>Tape &amp;<br>Tennis Balls</h3>
+              <a href="shop.html#/cricket/balls/tape-ball" class="btn btn--dark btn--sm">Shop Now <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <img src="https://images.unsplash.com/photo-1768360647310-2612990f3572?w=600&q=80" alt="Tape and tennis balls">
+          </div>
+          <div class="promo__card promo__card--orange">
+            <div class="promo__text">
+              <span class="subtitle subtitle--light">Match Quality</span>
+              <h3>Hardball<br>Leather Balls</h3>
+              <a href="shop.html#/cricket/balls/hard-ball" class="btn btn--dark btn--sm">Shop Now <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <img src="https://images.unsplash.com/photo-1743342873510-55d49972b746?w=600&q=80" alt="Hardball leather balls">
+          </div>
+          <div class="promo__card promo__card--blue">
+            <div class="promo__text">
+              <span class="subtitle">Stay Safe</span>
+              <h3>Helmets &amp;<br>Gloves</h3>
+              <a href="shop.html#/cricket/hardball-kits/helmets" class="btn btn--dark btn--sm">Shop Now <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <img src="https://images.unsplash.com/photo-1785906359585-9c053458d551?w=600&q=80" alt="Helmets and gloves">
+          </div>
+        </div>
+        <button class="cat-slider__arrow cat-slider__arrow--next" id="catNext" aria-label="Next categories"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+      <div class="cat-slider__dots" id="catDots"></div>
+    </div>
+  </section>
+
+  <!-- ================= CATEGORY TABS + PRODUCTS ================= -->
+  <section class="section products" id="shop">
+    <div class="container">
+      <div class="cats" id="cats">
+        <button class="cat active" data-cat="tape"><span><i class="fa-solid fa-baseball-bat-ball"></i></span>Tape Ball Bats</button>
+        <button class="cat" data-cat="hardball"><span><svg class="ico-bat" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><g transform="rotate(40 12 12)"><rect x="10.8" y="0.5" width="2.4" height="7" rx="1"/><path d="M8.6 7.5h6.8v13.2a2.3 2.3 0 0 1-2.3 2.3h-2.2a2.3 2.3 0 0 1-2.3-2.3z"/></g><circle cx="19.2" cy="19.4" r="2.6"/></svg></span>Hardball Bats</button>
+        <button class="cat" data-cat="balls"><span><i class="fa-solid fa-baseball"></i></span>Balls</button>
+        <button class="cat" data-cat="shirts"><span><i class="fa-solid fa-shirt"></i></span>Shirts</button>
+        <button class="cat" data-cat="trousers"><span><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M6 2h12l1.5 20h-5L12 9l-2.5 13h-5z"/></svg></span>Trousers</button>
+        <button class="cat" data-cat="kits"><span><i class="fa-solid fa-helmet-safety"></i></span>Hardball Kits</button>
+      </div>
+      <div class="product-grid" id="productGrid"></div>
+      <div class="center-btn"><a href="shop.html" class="btn btn--primary" id="viewAll">View All <i class="fa-solid fa-arrow-right"></i></a></div>
+    </div>
+  </section>
+
+  <!-- ================= NEW ARRIVALS ================= -->
+  <section class="arrivals">
+    <div class="container arrivals__grid">
+      <div class="arrivals__left">
+        <div class="arrivals__img arrivals__img--women">
+          <img src="https://images.unsplash.com/photo-1785906359814-d4c467499076?w=900&q=80" alt="Hardball kits new arrivals">
+        </div>
+        <div class="arrivals__label">
+          <span class="subtitle">Trending Now</span>
+          <h3>Hardball Kits<br>New Arrivals</h3>
+          <a href="shop.html#/cricket/hardball-kits" class="link-arrow">Explore Kits <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+      </div>
+      <div class="arrivals__right">
+        <div class="arrivals__label">
+          <span class="subtitle">New Collection</span>
+          <h3>Tape Ball<br>Bats</h3>
+          <a href="shop.html#/cricket/bats/tape-ball-bats" class="link-arrow">Explore Bats <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+        <div class="arrivals__img arrivals__img--men">
+          <img src="https://images.unsplash.com/photo-1593766788306-28561086694e?w=900&q=80" alt="Tape ball bats">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FEATURED PRODUCT ================= -->
+  <section class="section featured">
+    <div class="container">
+      <div class="section-head">
+        <span class="subtitle">Best Sellers</span>
+        <h2>Featured Product</h2>
+      </div>
+      <div class="product-grid" id="featuredGrid"></div>
+    </div>
+  </section>
+
+  <!-- ================= OFFER / COUNTDOWN ================= -->
+  <section class="offer">
+    <div class="container offer__inner">
+      <div class="offer__img">
+        <img src="https://images.unsplash.com/photo-1785906359458-a03460ad7073?w=1000&q=80" alt="Cricketer batting">
+      </div>
+      <div class="offer__content">
+        <span class="subtitle">Limited Time Offer</span>
+        <h2>Get 35% Off<br>On All Bats !</h2>
+        <div class="countdown" id="countdown">
+          <div><strong data-u="d">00</strong><span>Days</span></div>
+          <div><strong data-u="h">00</strong><span>Hours</span></div>
+          <div><strong data-u="m">00</strong><span>Mins</span></div>
+          <div><strong data-u="s">00</strong><span>Secs</span></div>
+        </div>
+        <a href="shop.html#/cricket/bats" class="btn btn--primary">Shop Now <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BRANDS ================= -->
+  <section class="brands">
+    <div class="container brands__row">
+      <div class="brand"><i class="fa-solid fa-baseball-bat-ball"></i><b>WILLOW</b><small>Bat Makers</small></div>
+      <div class="brand"><i class="fa-solid fa-baseball"></i><b>YORKER</b><small>Cricket Balls</small></div>
+      <div class="brand"><i class="fa-solid fa-helmet-safety"></i><b>GUARD</b><small>Protective Gear</small></div>
+      <div class="brand"><i class="fa-solid fa-trophy"></i><b>SIXER</b><small>Sports Co.</small></div>
+      <div class="brand"><i class="fa-solid fa-shirt"></i><b>BOUNDARY</b><small>Team Wear</small></div>
+      <div class="brand"><i class="fa-solid fa-bolt"></i><b>STRIKER</b><small>Tape Ball</small></div>
+    </div>
+  </section>
+
+  <!-- ================= LATEST NEWS ================= -->
+  <section class="section news" id="blog">
+    <div class="container">
+      <div class="section-head" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <span class="subtitle">Our Blog</span>
+          <h2>Latest News &amp; Guides</h2>
+        </div>
+        <a href="blog.html" class="btn btn--outline" style="font-size: 13px; padding: 8px 18px;">
+          View All Guides <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+      <div class="news__grid" id="homeNewsGrid">
+        <!-- Rendered dynamically from api.getPosts -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FEATURES ================= -->
+  <section class="features">
+    <div class="container features__row">
+      <div class="feature"><i class="fa-solid fa-truck-fast"></i><div><h5>Cash On Delivery</h5><p>Delivery all over Pakistan</p></div></div>
+      <div class="feature"><i class="fa-solid fa-rotate-left"></i><div><h5>Easy Returns</h5><p>7 days return &amp; exchange</p></div></div>
+      <div class="feature"><i class="fa-solid fa-medal"></i><div><h5>Original Quality</h5><p>100% genuine cricket gear</p></div></div>
+      <div class="feature"><i class="fa-brands fa-whatsapp"></i><div><h5>WhatsApp Support</h5><p>Quick help on every order</p></div></div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer" id="contact">
+    <div class="container footer__grid">
+      <div class="footer__col">
+        <a href="#" class="logo logo--light"><span class="logo__icon"><i class="fa-solid fa-baseball-bat-ball"></i></span>HAIDERSPORTS</a>
+        <p>Your one-stop cricket shop for tape ball bats, hardball bats, kits, balls, shirts and trousers.</p>
+        <div class="socials">
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+          <a href="#" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="shop.html#/cricket">Cricket Gear</a></li>
+          <li><a href="shop.html#/footwear">Footwear</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h5>Services</h5>
+        <ul>
+          <li><a href="order-tracking.html">Order Tracking</a></li>
+          <li><a href="wishlist.html">Wishlist</a></li>
+          <li><a href="shipping-policy.html">Shipping Info</a></li>
+          <li><a href="return-policy.html">Returns &amp; Exchange</a></li>
+          <li><a href="privacy-policy.html">Privacy Policy</a></li>
+          <li><a href="terms.html">Terms &amp; Conditions</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h5>Newsletter</h5>
+        <p>Subscribe to get the latest deals on bats, kits and more.</p>
+        <form class="newsletter" id="newsletter">
+          <input type="email" placeholder="Your email address" required>
+          <button type="submit" aria-label="Subscribe"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <div class="container footer__bottom-inner">
+        <p>&copy; <span id="year"></span> HAIDERSPORTS. All rights reserved.</p>
+        <div class="payments">
+          <i class="fa-brands fa-cc-visa"></i><i class="fa-brands fa-cc-mastercard"></i><i class="fa-solid fa-money-bill-wave"></i>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/dummy-data.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
