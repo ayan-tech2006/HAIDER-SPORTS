@@ -22,7 +22,7 @@
         <a href="shop.html" class="nav__link">Shop</a>
         <a href="shop.html#/cricket" class="nav__link">Cricket Gear</a>
         <a href="shop.html#/footwear" class="nav__link">Footwear</a>
-        <a href="blog.html" class="nav__link">Blog</a>
+        <a href="videos.html" class="nav__link">Videos</a>
         <a href="about.html" class="nav__link">About</a>
         <a href="contact.html" class="nav__link">Contact</a>
       </nav>
@@ -229,21 +229,19 @@
     </div>
   </section>
 
-  <!-- ================= LATEST NEWS ================= -->
-  <section class="section news" id="blog">
+  <!-- ================= VIDEOS ================= -->
+  <section class="section" id="videos" data-videos-section>
     <div class="container">
       <div class="section-head" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;">
         <div>
-          <span class="subtitle">Our Blog</span>
-          <h2>Latest News &amp; Guides</h2>
+          <span class="subtitle">Watch &amp; Learn</span>
+          <h2>Latest Videos</h2>
         </div>
-        <a href="blog.html" class="btn btn--outline" style="font-size: 13px; padding: 8px 18px;">
-          View All Guides <i class="fa-solid fa-arrow-right"></i>
+        <a href="videos.html" class="btn btn--outline" style="font-size: 13px; padding: 8px 18px;">
+          View All Videos <i class="fa-solid fa-arrow-right"></i>
         </a>
       </div>
-      <div class="news__grid" id="homeNewsGrid">
-        <!-- Rendered dynamically from api.getPosts -->
-      </div>
+      <div class="video-grid" id="videoGrid" data-limit="3"></div>
     </div>
   </section>
 
@@ -277,7 +275,7 @@
           <li><a href="shop.html">Shop</a></li>
           <li><a href="shop.html#/cricket">Cricket Gear</a></li>
           <li><a href="shop.html#/footwear">Footwear</a></li>
-          <li><a href="blog.html">Blog</a></li>
+          <li><a href="videos.html">Videos</a></li>
           <li><a href="about.html">About Us</a></li>
           <li><a href="contact.html">Contact Us</a></li>
         </ul>
@@ -318,5 +316,6 @@
   <script src="js/data.js"></script>
   <script src="js/common.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/videos.js"></script>
 </body>
 </html>

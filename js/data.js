@@ -335,127 +335,23 @@ const api = {
     }
   },
 
-  // Blog API methods
-  async getPosts({ page = 1, limit = 6, category = null } = {}) {
-    if (!isLiveSupabase()) {
-      return window.DUMMY_API ? window.DUMMY_API.getPosts({ page, limit, category }) : { posts: [], total: 0, page: 1, totalPages: 1, categories: ['All'] };
-    }
-
+  // YouTube videos (admin adds links; stored as the 11-character video id)
+  async getVideos({ limit = 0 } = {}) {
+    if (!isLiveSupabase()) return [];
     try {
-      let q = supabaseClient.from('blog_posts').select('*', { count: 'exact' }).eq('is_published', true);
-      if (category && category !== 'All' && category !== 'all') {
-        q = q.ilike('category', category);
-      }
-
-      const from = (page - 1) * limit;
-      const to = from + limit - 1;
-      const { data, count, error } = await q.order('published_at', { ascending: false }).range(from, to);
-
-      if (error || !data) {
-        throw error;
-      }
-
-      // Fetch distinct categories
-      const { data: allPosts } = await supabaseClient.from('blog_posts').select('category').eq('is_published', true);
-      const categories = ['All', ...new Set((allPosts || []).map(p => p.category))];
-
-      const posts = data.map(p => {
-        const pubDate = new Date(p.published_at || p.created_at);
-        return {
-          slug: p.slug,
-          title: p.title,
-          excerpt: p.excerpt,
-          cover: p.cover_url,
-          author: p.author,
-          category: p.category,
-          date: pubDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-          day: String(pubDate.getDate()).padStart(2, '0'),
-          month: pubDate.toLocaleString('en-US', { month: 'short' }),
-          readTime: `${Math.max(3, Math.ceil(p.content.split(/\s+/).length / 150))} min read`,
-          content: p.content
-        };
-      });
-
-      return {
-        posts,
-        total: count || posts.length,
-        page,
-        totalPages: Math.ceil((count || posts.length) / limit) || 1,
-        categories
-      };
-    } catch (err) {
-      console.warn('Falling back to dummy getPosts:', err);
-      return window.DUMMY_API ? window.DUMMY_API.getPosts({ page, limit, category }) : { posts: [], total: 0, page: 1, totalPages: 1, categories: ['All'] };
-    }
-  },
-
-  async getPost(slug) {
-    if (!slug) return null;
-    if (!isLiveSupabase()) {
-      return window.DUMMY_API ? window.DUMMY_API.getPost(slug) : null;
-    }
-
-    try {
-      const { data: p, error } = await supabaseClient
-        .from('blog_posts')
-        .select('*')
-        .eq('slug', slug)
+      let q = supabaseClient.from('videos')
+        .select('id, title, description, youtube_id')
         .eq('is_published', true)
-        .maybeSingle();
-
-      if (error || !p) {
-        return window.DUMMY_API ? window.DUMMY_API.getPost(slug) : null;
-      }
-
-      const pubDate = new Date(p.published_at || p.created_at);
-      const post = {
-        slug: p.slug,
-        title: p.title,
-        excerpt: p.excerpt,
-        cover: p.cover_url,
-        author: p.author,
-        category: p.category,
-        date: pubDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-        day: String(pubDate.getDate()).padStart(2, '0'),
-        month: pubDate.toLocaleString('en-US', { month: 'short' }),
-        readTime: `${Math.max(3, Math.ceil(p.content.split(/\s+/).length / 150))} min read`,
-        content: p.content
-      };
-
-      // 3 related posts
-      const { data: relData } = await supabaseClient
-        .from('blog_posts')
-        .select('*')
-        .neq('slug', slug)
-        .eq('is_published', true)
-        .limit(3);
-
-      const relatedPosts = (relData || []).map(r => ({
-        slug: r.slug,
-        title: r.title,
-        excerpt: r.excerpt,
-        cover: r.cover_url,
-        author: r.author,
-        category: r.category,
-        readTime: '5 min read'
-      }));
-
-      // Recommended gear items
-      const { data: prods } = await supabaseClient
-        .from('products')
-        .select('*, product_images(*), product_variants(*)')
-        .eq('is_active', true)
-        .limit(4);
-
-      const recommendedProducts = (prods || []).map(normalizeProduct);
-
-      return {
-        ...post,
-        relatedPosts,
-        recommendedProducts
-      };
+        .order('sort_order', { ascending: true })
+        .order('created_at', { ascending: false });
+      if (limit) q = q.limit(limit);
+      const { data, error } = await q;
+      if (error) throw error;
+      return data || [];
     } catch (err) {
-      return window.DUMMY_API ? window.DUMMY_API.getPost(slug) : null;
+      // table not created yet, or offline: the site simply shows no videos
+      console.warn('Videos unavailable:', err.message || err);
+      return [];
     }
   },
 
@@ -798,16 +694,14 @@ const api = {
     if (!isLiveSupabase()) return null;
 
     try {
-      const [homeRes, featRes, blogRes] = await Promise.all([
+      const [homeRes, featRes] = await Promise.all([
         supabaseClient.from('home_content').select('*').eq('is_active', true).order('sort_order', { ascending: true }),
-        supabaseClient.from('products').select('*, product_images(*), product_variants(*)').eq('is_featured', true).eq('is_active', true).limit(8),
-        supabaseClient.from('blog_posts').select('*').eq('is_published', true).order('published_at', { ascending: false }).limit(3)
+        supabaseClient.from('products').select('*, product_images(*), product_variants(*)').eq('is_featured', true).eq('is_active', true).limit(8)
       ]);
 
       return {
         blocks: homeRes.data || [],
-        featuredProducts: (featRes.data || []).map(normalizeProduct),
-        latestPosts: blogRes.data || []
+        featuredProducts: (featRes.data || []).map(normalizeProduct)
       };
     } catch (err) {
       return null;

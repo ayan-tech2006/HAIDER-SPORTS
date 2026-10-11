@@ -1,0 +1,6 @@
+{
+  "redirects": [
+    { "source": "/blog.html", "destination": "/videos.html", "permanent": true },
+    { "source": "/post.html", "destination": "/videos.html", "permanent": true }
+  ]
+}

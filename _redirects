@@ -1,3 +1,5 @@
 # Netlify / Cloudflare redirects & fallback
+/blog.html /videos.html 301
+/post.html /videos.html 301
 /admin /admin/index.html 200
 /* /404.html 404

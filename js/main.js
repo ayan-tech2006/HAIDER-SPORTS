@@ -351,36 +351,6 @@ tick(); setInterval(tick, 1000);
 const io = new IntersectionObserver(entries => entries.forEach(en => {
   if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
 }), { threshold: 0.12 });
-document.querySelectorAll('.cat-slider, .cats, .section-head, .arrivals__left, .arrivals__right, .offer__content, .brand, .news__card, .feature')
+document.querySelectorAll('.cat-slider, .cats, .section-head, .arrivals__left, .arrivals__right, .offer__content, .brand, .feature')
   .forEach(el => { el.classList.add('reveal'); io.observe(el); });
-
-// Render 3 latest posts dynamically on home page
-const homeNewsGrid = document.getElementById('homeNewsGrid');
-if (homeNewsGrid && typeof api !== 'undefined' && api.getPosts) {
-  api.getPosts({ page: 1, limit: 3 }).then(({ posts }) => {
-    if (!posts || posts.length === 0) { const sec = homeNewsGrid.closest('section'); if (sec) sec.style.display = 'none'; return; }
-    homeNewsGrid.innerHTML = posts.map(p => `
-      <article class="news__card reveal in">
-        <div class="news__img">
-          <a href="post.html?slug=${encodeURIComponent(p.slug)}">
-            <img src="${img(p.cover)}" alt="${esc(p.title)}" loading="lazy">
-          </a>
-          <span class="news__date"><b>${p.day || '15'}</b>${p.month || 'Oct'}</span>
-        </div>
-        <div class="news__content">
-          <span class="news__tag">${esc(p.category)}</span>
-          <div class="news__meta">
-            <span><i class="fa-regular fa-user"></i> ${esc(p.author)}</span>
-            <span><i class="fa-regular fa-clock"></i> ${esc(p.readTime)}</span>
-          </div>
-          <h4><a href="post.html?slug=${encodeURIComponent(p.slug)}">${esc(p.title)}</a></h4>
-          <p class="news__excerpt">${esc(p.excerpt)}</p>
-          <a href="post.html?slug=${encodeURIComponent(p.slug)}" class="news__readmore">
-            Read Full Guide <i class="fa-solid fa-arrow-right"></i>
-          </a>
-        </div>
-      </article>
-    `).join('');
-  }).catch(err => console.error('Failed to load home blog posts:', err));
-}
 

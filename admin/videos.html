@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Videos - Haider Sports Admin</title>
+
+  <!-- Google Fonts & Lucide Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+
+  <!-- Admin Styles -->
+  <link rel="stylesheet" href="css/admin.css">
+  <style>
+    .vid-thumb { width: 128px; aspect-ratio: 16 / 9; border-radius: 8px; object-fit: cover; background: #e5e7eb; display: block; }
+    .vid-title { font-weight: 600; color: var(--heading); }
+    .vid-desc { font-size: 12.5px; color: #64748b; margin-top: 2px; max-width: 420px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .vid-actions { display: flex; justify-content: flex-end; gap: 4px; flex-wrap: wrap; }
+    .vid-preview { margin-top: 10px; display: none; gap: 12px; align-items: center; padding: 10px; border: 1px solid var(--border); border-radius: 10px; background: #f9fafb; }
+    .vid-preview.show { display: flex; }
+    .vid-preview img { width: 120px; aspect-ratio: 16 / 9; border-radius: 6px; object-fit: cover; background: #e5e7eb; }
+    .vid-preview small { color: #64748b; }
+    .vid-error { color: #dc2626; font-size: 12.5px; margin-top: 6px; display: none; }
+    .vid-error.show { display: block; }
+    .vid-setup { display: none; margin-bottom: 20px; padding: 16px 18px; border: 1px solid #fcd34d; background: #fffbeb; color: #92400e; border-radius: 10px; font-size: 13.5px; }
+    .vid-setup.show { display: block; }
+    .vid-setup code { background: #fef3c7; padding: 1px 6px; border-radius: 4px; }
+    @media (max-width: 700px) { .vid-thumb { width: 96px; } }
+  </style>
+</head>
+<body>
+
+  <!-- Admin Shell Layout -->
+  <div id="adminLayout">
+
+    <div class="admin-header-row">
+      <div>
+        <h2 style="font-size: 22px; font-weight: 800; color: var(--heading);">Videos</h2>
+        <p style="font-size: 13px; color: #64748b; margin-top: 2px;">Paste a YouTube link and it appears on the website's Videos page and on the home page.</p>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button type="button" class="btn btn--primary btn--sm" id="addVideoBtn" style="display: inline-flex; align-items: center; gap: 6px;">
+          <i data-lucide="plus" style="width: 14px; height: 14px;"></i> Add Video
+        </button>
+      </div>
+    </div>
+
+    <!-- Shown only if the videos table has not been created yet -->
+    <div class="vid-setup" id="setupNotice">
+      <strong>One-time setup needed.</strong> The <code>videos</code> table does not exist in Supabase yet.
+      Open Supabase &rarr; SQL Editor, paste the file <code>supabase/videos.sql</code> from the project and press Run. Then refresh this page.
+    </div>
+
+    <div class="admin-card">
+      <div class="admin-card__body" style="padding: 0;">
+        <div class="admin-table-wrap">
+          <table class="admin-table" id="videosTable">
+            <thead>
+              <tr>
+                <th style="width: 150px;">Video</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="videosBody">
+              <tr><td colspan="4" style="text-align: center; padding: 40px; color: #64748b;">Loading videos...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-pagination"><div class="pagination-info" id="videosCount">&nbsp;</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add / Edit Video Modal -->
+  <div class="admin-modal-backdrop" id="videoModal">
+    <div class="admin-modal">
+      <div class="admin-modal__header">
+        <h3 class="admin-modal__title" id="videoModalTitle">Add Video</h3>
+        <button type="button" class="admin-modal__close" aria-label="Close" onclick="admin.modal.close('videoModal')">&times;</button>
+      </div>
+      <form id="videoForm" novalidate>
+        <div class="admin-modal__body">
+          <input type="hidden" id="videoId" value="">
+
+          <div class="form-group">
+            <label for="videoUrl" class="form-label">YouTube link <span class="req">*</span></label>
+            <input type="text" id="videoUrl" class="form-control" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+            <div class="form-hint">Any YouTube link works: watch, youtu.be, Shorts or embed.</div>
+            <div class="vid-error" id="urlError">That does not look like a YouTube link. Copy it from the YouTube address bar or the Share button.</div>
+            <div class="vid-preview" id="urlPreview">
+              <img id="previewImg" alt="">
+              <small id="previewText"></small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="videoTitle" class="form-label">Title <span class="req">*</span></label>
+            <input type="text" id="videoTitle" class="form-control" maxlength="120" placeholder="e.g. How to knock-in a new English willow bat">
+          </div>
+
+          <div class="form-group">
+            <label for="videoDesc" class="form-label">Short description (optional)</label>
+            <textarea id="videoDesc" class="form-control" rows="3" maxlength="240" placeholder="One or two lines shown under the title"></textarea>
+          </div>
+
+          <label class="form-check" style="margin-top: 4px;">
+            <input type="checkbox" id="videoPublished" checked>
+            <span>Show on the website</span>
+          </label>
+        </div>
+        <div class="admin-modal__footer">
+          <button type="button" class="btn btn--outline btn--sm" onclick="admin.modal.close('videoModal')">Cancel</button>
+          <button type="submit" class="btn btn--primary btn--sm" id="saveVideoBtn">Save Video</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.48.1/dist/umd/supabase.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/common.js"></script>
+  <script src="js/admin-common.js"></script>
+  <script src="js/videos.js"></script>
+
+</body>
+</html>

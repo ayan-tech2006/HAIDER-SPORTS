@@ -838,6 +838,7 @@ async function syncHeaderNavigation() {
     const currentHash = window.location.hash;
     const isHome = currentPath.endsWith('index.html') || currentPath.endsWith('/') || currentPath === '';
     const isShop = currentPath.endsWith('shop.html');
+    const isVideos = currentPath.endsWith('videos.html');
     const isAbout = currentPath.endsWith('about.html');
     const isContact = currentPath.endsWith('contact.html');
 
@@ -852,6 +853,7 @@ async function syncHeaderNavigation() {
     });
 
     html += `
+      <a href="videos.html" class="nav__link ${isVideos ? 'active' : ''}">Videos</a>
       <a href="about.html" class="nav__link ${isAbout ? 'active' : ''}">About</a>
       <a href="contact.html" class="nav__link ${isContact ? 'active' : ''}">Contact</a>
     `;

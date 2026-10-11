@@ -340,7 +340,7 @@ window.admin = window.admin || {};
       { key: 'home-content', label: 'Content', icon: 'layers', href: 'home-content.html' },
       { key: 'coupons', label: 'Coupons', icon: 'tag', href: 'coupons.html' },
       { key: 'reviews', label: 'Reviews', icon: 'star', href: 'reviews.html', badgeId: 'badgeReviews' },
-      { key: 'blog', label: 'Blog', icon: 'newspaper', href: 'blog.html' },
+      { key: 'videos', label: 'Videos', icon: 'play-circle', href: 'videos.html' },
       { key: 'messages', label: 'Messages', icon: 'mail', href: 'messages.html', badgeId: 'badgeMessages' },
       { key: 'settings', label: 'Settings', icon: 'settings', href: 'settings.html' }
     ];
