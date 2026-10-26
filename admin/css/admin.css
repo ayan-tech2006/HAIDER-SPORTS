@@ -2252,7 +2252,74 @@ svg.lucide, .lucide {
   border: 1px solid rgba(228, 228, 231, 0.8);
 }
 
-/* --- Responsive Rules for Mobile / Tablet --- */
+/* ==========================================================================
+   MOBILE RESPONSIVENESS & HORIZONTAL SCROLL FIXES (ALL ADMIN PAGES)
+   ========================================================================== */
+
+/* Global Viewport Overflow Protection */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.admin-wrapper {
+  max-width: 100%;
+  overflow-x: hidden;
+  min-width: 0;
+  width: 100%;
+}
+
+.admin-main {
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.admin-content {
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Container & Card Flex/Grid Containment (Prevents wide tables/grids from expanding page) */
+.admin-card,
+.admin-card__body,
+.admin-card__header,
+.dashboard-grid,
+.admin-stats-grid {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Table Scrolling Isolated Inside Wrapper */
+.admin-table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+/* Filter Pills Horizontal Scrollable Bar (No Page Overflow) */
+.filter-pills {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+}
+.filter-pills::-webkit-scrollbar {
+  display: none;
+}
+.filter-pill {
+  flex-shrink: 0;
+}
+
+/* Tablet & Mobile Layout Rules (<= 992px) */
 @media (max-width: 992px) {
   .admin-sidebar {
     width: 280px;
@@ -2278,17 +2345,168 @@ svg.lucide, .lucide {
   }
   .admin-sidebar.open ~ .admin-sidebar-backdrop { opacity: 1; visibility: visible; }
   .admin-main { margin-left: 0; }
-  .admin-topbar { margin: 12px 14px 0; top: 12px; }
+  
+  .admin-topbar {
+    margin: 10px 10px 0;
+    top: 10px;
+    padding: 0 12px;
+    max-width: calc(100% - 20px);
+    box-sizing: border-box;
+  }
   .admin-topbar__toggle { display: flex; }
   .admin-topbar-tabs { display: none; }
-  .admin-content { padding: 20px 14px 50px; }
+  .admin-content { padding: 16px 12px 50px; }
+
+  /* Collapse multi-column inline grids to 1 column */
+  div[style*="grid-template-columns: 2fr 1fr"],
+  div[style*="grid-template-columns: 1.2fr 1fr"],
+  div[style*="grid-template-columns: 2fr 1fr 1fr"],
+  div[style*="grid-template-columns: 1fr 1fr"],
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
 }
 
+/* Phone Layout Rules (<= 700px) */
 @media (max-width: 700px) {
-  .admin-header-row h2 { font-size: 24px !important; }
-  .stat-card { padding: 18px; }
-  .stat-card__value { font-size: 26px; }
-  .admin-user-details { display: none; }
+  .admin-topbar {
+    height: 58px;
+    margin: 8px 8px 0;
+    top: 8px;
+    padding: 0 10px;
+    max-width: calc(100% - 16px);
+    border-radius: 18px;
+    gap: 8px;
+  }
+
+  .admin-topbar__left { gap: 8px; }
+  .admin-topbar__toggle { width: 34px; height: 34px; }
+  .admin-topbar__brand-badge { display: none; }
+  
+  .admin-topbar__right { gap: 6px; }
+  .admin-topbar__icon-btn { width: 34px; height: 34px; }
+  
+  /* Hide email and name text on phones so only the avatar shows without overflowing */
+  .admin-user-meta,
+  .admin-user-details,
+  .admin-user-chevron {
+    display: none !important;
+  }
+  .admin-user-pill {
+    padding: 2px !important;
+    background: transparent !important;
+    border: none !important;
+  }
+  .admin-user-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .admin-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .admin-header-row > div:last-child {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .admin-header-row h2 {
+    font-size: 22px !important;
+  }
+
+  /* Table search & filter controls */
+  .admin-table-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .admin-search-wrap {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* Stats grid */
+  .admin-stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    margin-bottom: 16px;
+  }
+  .stat-card {
+    padding: 14px;
+    border-radius: 16px;
+  }
+  .stat-card__value {
+    font-size: 20px;
+  }
+  .stat-card__icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* Pagination */
+  .table-pagination {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+
+  /* Modals */
+  .admin-modal {
+    max-width: calc(100vw - 20px) !important;
+    width: 100% !important;
+    margin: 10px;
+    border-radius: 20px;
+  }
+  .admin-modal__header,
+  .admin-modal__body,
+  .admin-modal__footer {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* Extra Small Phones (<= 440px) */
+@media (max-width: 440px) {
+  .admin-topbar__brand-title {
+    display: none;
+  }
+  .admin-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .admin-content {
+    padding: 14px 8px 40px;
+  }
+  .admin-card__header {
+    padding: 12px 14px;
+  }
+  .admin-card__body {
+    padding: 14px 12px;
+  }
+}
+
+/* Variant rows on mobile (product-edit.html) */
+@media (max-width: 650px) {
+  .variant-row {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    background: #f9fafb;
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+  }
+  .variant-row button {
+    grid-column: span 2;
+    width: 100%;
+    margin-top: 4px;
+  }
 }
 
 
