@@ -14,7 +14,8 @@
   --font-body: 'Poppins', sans-serif;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+* { -webkit-tap-highlight-color: transparent; }
 html { scroll-behavior: smooth; }
 html, body { max-width: 100%; overflow-x: clip; }
 body { font-family: var(--font-body); color: var(--text); background: #fff; font-size: 15px; line-height: 1.6; }
@@ -24,6 +25,50 @@ a { color: inherit; text-decoration: none; }
 ul { list-style: none; }
 button { font: inherit; cursor: pointer; border: none; background: none; }
 h1, h2, h3, h4, h5 { font-family: var(--font-head); color: var(--heading); line-height: 1.15; }
+
+/* ---------- Focus & Accessibility ---------- */
+a, button, [role="button"] { outline: none; }
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ---------- Global Press Effect ---------- */
+button,
+.btn,
+[role="button"],
+.header__icons a,
+.header__icons button,
+.menu-btn,
+.product,
+.product-card,
+.wishlist-card {
+  transition: all 150ms ease;
+}
+
+button:active:not(:disabled),
+.btn:active:not(:disabled):not(.disabled),
+[role="button"]:active:not([aria-disabled="true"]):not(:disabled),
+.header__icons a:active,
+.header__icons button:active:not(:disabled),
+.menu-btn:active,
+.product:active,
+.product-card:active,
+.wishlist-card:active {
+  transform: scale(0.95);
+  opacity: 0.9;
+}
+
+@supports selector(:has(*)) {
+  .product:active:has(button:active, .btn:active),
+  .product-card:active:has(button:active, .btn:active),
+  .wishlist-card:active:has(button:active, .btn:active) {
+    transform: none;
+    opacity: 1;
+  }
+}
 
 .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
 .section { padding: 80px 0; }
@@ -35,7 +80,7 @@ h1, h2, h3, h4, h5 { font-family: var(--font-head); color: var(--heading); line-
 .section-head h2 { font-size: 40px; }
 
 /* ---------- Buttons ---------- */
-.btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; border-radius: 50px; font-weight: 500; font-size: 14px; transition: .3s; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; border-radius: 50px; font-weight: 500; font-size: 14px; transition: all 150ms ease; }
 .btn i { font-size: 12px; transition: transform .3s; }
 .btn:hover i { transform: translateX(4px); }
 .btn--primary { background: var(--primary); color: #fff; }
