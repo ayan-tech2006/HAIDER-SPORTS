@@ -1,0 +1,116 @@
+# ==============================================================================
+# HAIDER SPORTS - Apache / cPanel (.htaccess)
+# Optimized for Hoster.pk & Standard cPanel Web Hosting
+# ==============================================================================
+
+# 1. DIRECTORY INDEX & OPTIONS
+DirectoryIndex index.html index.htm
+Options -Indexes -MultiViews
+
+# 2. CUSTOM ERROR DOCUMENTS
+ErrorDocument 404 /404.html
+
+# 3. REWRITE RULES & SSL / REDIRECTS
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 3.1 Force HTTPS (SSL)
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # 3.2 Canonical /admin handling -> /admin/index.html
+  RewriteRule ^admin/?$ admin/index.html [L]
+
+  # 3.3 Legacy redirects (matching vercel.json & netlify.toml)
+  RewriteRule ^blog\.html$ /videos.html [R=301,L]
+  RewriteRule ^post\.html$ /videos.html [R=301,L]
+</IfModule>
+
+# 4. SECURITY HEADERS
+<IfModule mod_headers.c>
+  # Prevent MIME type sniffing
+  Header always set X-Content-Type-Options "nosniff"
+
+  # Protect against clickjacking
+  Header always set X-Frame-Options "SAMEORIGIN"
+
+  # Referrer policy
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Protect sensitive hidden files
+  <FilesMatch "(^\.|\.(env|sql|json|lock|toml|md)$)">
+    Header always set Cache-Control "no-store, no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# 5. BLOCK ACCESS TO SENSITIVE FILES (.git, .env, SQL backups)
+<FilesMatch "^\.">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+<FilesMatch "\.(sql|env|example|toml)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# 6. GZIP / DEFLATE COMPRESSION FOR SPEED
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/xml
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/json
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE font/ttf
+  AddOutputFilterByType DEFLATE font/otf
+  AddOutputFilterByType DEFLATE font/woff
+  AddOutputFilterByType DEFLATE font/woff2
+</IfModule>
+
+# 7. BROWSER CACHING (FAST PAGE LOADS)
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 month"
+
+  # HTML documents (keep fresh for updates)
+  ExpiresByType text/html "access plus 0 seconds"
+
+  # CSS and JavaScript
+  ExpiresByType text/css "access plus 1 week"
+  ExpiresByType text/javascript "access plus 1 week"
+  ExpiresByType application/javascript "access plus 1 week"
+  ExpiresByType application/x-javascript "access plus 1 week"
+
+  # Images and Favicons
+  ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/gif "access plus 1 month"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+
+  # Web Fonts
+  ExpiresByType font/ttf "access plus 1 year"
+  ExpiresByType font/otf "access plus 1 year"
+  ExpiresByType font/woff "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
