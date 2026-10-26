@@ -81,6 +81,8 @@ Object.values(products).forEach(list => {
 });
 
 const featured = [products.tape[0], products.hardball[0], products.kits[0], products.shirts[0]];
+// The lists above are demo data for offline/dummy mode only; with the live database they must never show
+const LIVE = typeof isLiveSupabase === 'function' && isLiveSupabase();
 
 // Category tabs
 const grid = document.getElementById('productGrid');
@@ -92,16 +94,17 @@ const renderCat = cat => {
     viewAll.href = `shop.html#/${shopPath[cat] || ''}`;
   }
 };
-renderCat('tape');
+if (!LIVE) renderCat('tape');
 
 const featGrid = document.getElementById('featuredGrid');
 if (featGrid) {
-  featGrid.innerHTML = featured.map(productCard).join('');
+  const featSection = featGrid.closest('section');
+  if (!LIVE) featGrid.innerHTML = featured.map(productCard).join('');
   if (typeof api !== 'undefined' && api.getHomeContent) {
     api.getHomeContent().then(res => {
-      if (res && res.featuredProducts && res.featuredProducts.length > 0) {
-        featGrid.innerHTML = res.featuredProducts.slice(0, 4).map(productCard).join('');
-      }
+      const list = (res && res.featuredProducts) || [];
+      if (list.length) featGrid.innerHTML = list.slice(0, 4).map(productCard).join('');
+      else if (LIVE && featSection) featSection.hidden = true; // nothing marked featured: hide the section
       if (res && res.blocks) {
         const offerBlock = res.blocks.find(b => b.section === 'offer');
         if (offerBlock && offerBlock.data && offerBlock.is_active) {
